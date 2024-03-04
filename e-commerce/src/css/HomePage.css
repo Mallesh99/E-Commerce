@@ -1,0 +1,265 @@
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap");
+
+@font-face {
+  font-family: Integral;
+  src: url(./Fontspring-DEMO-integralcf-regular.otf);
+}
+.home-page {
+  display: inline;
+}
+
+#discount p {
+  width: 100%;
+  background-color: black;
+  color: white;
+  text-align: center;
+}
+
+.center-all {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+}
+
+.search {
+  width: 45%;
+  height: 45px;
+  border-radius: 80px;
+  padding: 12px, 16px, 12px, 16px;
+}
+
+#nav-title {
+  font-size: 32px;
+  font-weight: 700;
+  font-family: "Integral";
+}
+
+.content {
+  max-width: 100%;
+  display: flex;
+  /* align-items: center; */
+  justify-content: space-between;
+  background-color: #f2f0f1;
+}
+
+.matter {
+  margin: 120px 120px 0px 120px;
+  max-width: 570px;
+}
+
+#matterh1 {
+  font-size: 64px;
+  font-weight: 700;
+  font-family: "Integral";
+}
+
+#matterp {
+  font-size: 14px;
+  font-weight: 400;
+  margin-top: 20px;
+}
+
+#matterbutton {
+  width: 210px;
+  height: 52px;
+  border-radius: 62px;
+  padding: 16px, 54px, 16px, 54px;
+  background-color: black;
+  color: white;
+  margin-top: 20px;
+}
+
+.count {
+  display: flex;
+  gap: 35px;
+  font-weight: 700;
+  margin-top: 35px;
+}
+
+.count p {
+  color: gray;
+}
+
+.brandimg {
+  width: 100%;
+  height: 15vh;
+  background-color: black;
+  gap: 150px;
+}
+
+.products-line {
+  gap: 30px;
+}
+
+.newarrivals h1,
+.topselling h1 {
+  font-weight: 700;
+  font-family: "Integral";
+}
+
+.view-all-btn {
+  width: 13vw;
+  height: 7.5vh;
+  border-radius: 62px;
+  border-width: 1px;
+  border-color: rgba(117, 16, 16, 0.1);
+  padding: 16px, 54px, 16px, 54px;
+  color: black;
+  background-color: white;
+  font-weight: 600;
+}
+
+.browsebydiv {
+  width: 100%;
+}
+.browsebybox {
+  font-weight: 700;
+  font-family: "Integral";
+  width: 80%;
+  background-color: #f0f0f0;
+  border-radius: 40px;
+}
+
+.browseby h1 {
+  text-align: center;
+  display: flex;
+}
+
+.reviewdiv h1 {
+  font-weight: 700;
+  font-family: "Integral";
+}
+
+.reviews-line {
+  display: flex;
+  justify-content: center;
+  gap: 10vw;
+}
+
+/* @media only screen and (max-width: 600px) {
+  home-page {
+    background-color: aquamarine;
+  }
+} */
+
+@media only screen and (max-width: 760px) {
+  .content {
+    flex-direction: column;
+    align-items: center;
+  }
+  .matter {
+    margin: 60px 20px 0 20px;
+    background-color: #f2f0f1;
+    /* text-align: center; */
+  }
+  #matterh1 {
+    font-size: 42px;
+    font-weight: 700;
+    width: 80vw;
+  }
+  #matterp {
+    font-size: 12px;
+  }
+  #matterbutton {
+    width: 100%;
+    height: 42px;
+    font-size: 14px;
+  }
+  .count {
+    flex-direction: row;
+    gap: 15px;
+    margin-top: 25px;
+  }
+  .brandimg {
+    display: flow;
+    padding: 1rem 0;
+    height: auto;
+  }
+
+  .curp {
+    width: 97%;
+    height: 300px;
+    object-fit: cover;
+  }
+
+  .browseby img {
+    margin: 5px 5px;
+  }
+
+  #discount {
+    width: 100%;
+    font-size: 10px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .newarrivals h1,
+  .topselling h1 {
+    font-size: 24px;
+  }
+  .view-all-btn {
+    width: 80%;
+    font-size: 12px;
+  }
+  .browsebybox {
+    width: 90%;
+  }
+  .reviews-line {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  #matterh1 {
+    font-size: 32px;
+  }
+  #matterp {
+    font-size: 10px;
+  }
+  #matterbutton {
+    width: 160px;
+    height: 36px;
+    font-size: 12px;
+  }
+  .count {
+    gap: 10px;
+    margin-top: 20px;
+  }
+}
+
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+
+  /* Center slide text vertically */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.casualimg {
+  margin: 0 10px 10px 0;
+}
+.formalimg {
+  margin: 0 0 10px 10px;
+}
+.partyimg {
+  margin: 10px 10px 60px 0px;
+}
+.gymimg {
+  margin: 10px 0px 60px 10px;
+}
