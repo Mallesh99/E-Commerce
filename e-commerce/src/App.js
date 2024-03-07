@@ -28,17 +28,12 @@ function App() {
           <>
             <Route path="/" element={<Layout />}>
               <Route index element={<HomePage />} />
-              {/* <Route
-              path={["/:id", "/categorypage/:id"]}
-              element={<ProductPage />}
-            /> */}
               {["/:id", "/categorypage/:id"].map((path, index) => (
                 <Route path={path} element={<ProductPage />} />
               ))}
               <Route path="/categorypage" element={<CategoryPage />} />
               <Route path="/cartpage" element={<CartPage />} />
             </Route>
-            {/* <Footer /> */}
           </>
         )}
       </Routes>

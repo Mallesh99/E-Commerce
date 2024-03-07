@@ -61,7 +61,7 @@ const Users = () => {
         <thead>
           <tr>
             {/* <th>Product-ID</th> */}
-            <th>id</th>
+            <th>Fullname</th>
             <th>User Emails</th>
             <th></th>
             <th></th>
@@ -72,8 +72,8 @@ const Users = () => {
             return (
               <tr>
                 {/* <td>{user._id}</td> */}
-                <td>{user._id}</td>
 
+                <td>{user.fullname}</td>
                 <td>{user.email}</td>
 
                 <td>

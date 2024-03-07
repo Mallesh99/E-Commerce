@@ -2,21 +2,22 @@ import React, { Component } from "react";
 
 export class Circle extends Component {
   render() {
-    var circleStyle = {
-      margin: 10,
-      display: "inline-block",
-      backgroundColor: this.props.bgColor,
-      borderRadius: "50%",
-      width: 30,
-      height: 30,
-    };
     return (
-      <div
-        style={circleStyle}
+      <button
+        className="active"
+        style={{
+          margin: 10,
+          display: "inline-block",
+          backgroundColor: this.props.bgColor,
+          borderRadius: "50%",
+          borderColor: "blue",
+          width: 30,
+          height: 30,
+        }}
         onClick={() => {
           console.log("hi");
         }}
-      ></div>
+      ></button>
     );
   }
 }

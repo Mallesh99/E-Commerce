@@ -67,7 +67,7 @@ const Item = require("./db/itemModel");
 
 app.post("/items", upload.single("image"), async (req, res) => {
   try {
-    // console.log(req);
+    console.log(req.body);
     const newItem = new Item({
       ...req.body,
       image: `http://192.168.50.131:8000/images/${req.file.originalname}`,
@@ -234,6 +234,7 @@ app.post("/register", (request, response) => {
     .hash(request.body.password, 10)
     .then((hashedPassword) => {
       const user = new User({
+        fullname: request.body.fullname,
         email: request.body.email,
         password: hashedPassword,
       });
@@ -287,6 +288,7 @@ app.post("/login", (request, response) => {
           ); //imp
 
           response.status(200).send({
+            fullname: user.fullname,
             message: "Login Successful",
             email: user.email,
             id: user._id,
@@ -312,7 +314,15 @@ app.post("/login", (request, response) => {
 
 app.patch("/items/:id", async (req, res) => {
   const updates = Object.keys(req.body);
-  const allowedUpdates = ["name", "description", "category", "price"];
+  const allowedUpdates = [
+    "name",
+    "description",
+    "category",
+    "price",
+    "sizes",
+    "colors",
+    "discount",
+  ];
 
   const isValidOperation = updates.every((update) =>
     allowedUpdates.includes(update)
@@ -420,7 +430,7 @@ app.post("/cart", async (req, res) => {
       //check if product exists or not
       if (itemIndex > -1) {
         let product = cart.items[itemIndex];
-        product.quantity += quantity;
+        product.quantity = quantity;
         cart.bill = cart.items.reduce((acc, curr) => {
           return acc + curr.quantity * curr.price;
         }, 0);
@@ -491,6 +501,37 @@ app.delete("/cart/:id/", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(400).send();
+  }
+});
+
+//for coupons
+
+const Coup = require("./db/couponModel");
+const Order = require("./db/orderModel");
+app.post("/coupons", async (req, res) => {
+  try {
+    const newCoup = new Coup({
+      ...req.body,
+    });
+
+    await newCoup.save();
+    res.status(201).send(newCoup);
+  } catch (error) {
+    console.log({ error });
+    res.status(400).send({ message: "error" });
+  }
+});
+app.post("/orders", async (req, res) => {
+  try {
+    const newOrd = new Order({
+      ...req.body,
+    });
+
+    await newOrd.save();
+    res.status(201).send(newOrd);
+  } catch (error) {
+    console.log({ error });
+    res.status(400).send({ message: "error" });
   }
 });
 

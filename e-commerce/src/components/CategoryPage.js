@@ -29,8 +29,8 @@ const CategoryPage = () => {
   }
   useEffect(() => {
     fetchData();
-    window.scrollTo(0, 0);
-  }, []);
+    // window.scrollTo(0, 0);
+  }, [products]);
 
   var colors = [
     "#393E41",

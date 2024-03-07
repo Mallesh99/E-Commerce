@@ -10,10 +10,6 @@ import line from "../images/Line 1.svg";
 import minus from "../images/Vector.svg";
 import plus from "../images/Vector-1.svg";
 import ProductCard from "./Productcard";
-import a1 from "../images/a1.svg";
-import a2 from "../images/a2.svg";
-import a3 from "../images/a3.svg";
-import a4 from "../images/a4.svg";
 import axios from "axios";
 
 import Circle from "./Circle";
@@ -24,7 +20,6 @@ import { FreeMode, Pagination } from "swiper/modules";
 import "swiper/css";
 
 const ProductPage = () => {
-  const [count, setCount] = useState(1);
   const [color, setColor] = useState("White");
   const [size, setSize] = useState("Medium");
   // console.log(typeof count);
@@ -33,11 +28,15 @@ const ProductPage = () => {
   const id = location.pathname;
   const [product, setProduct] = useState();
   const [products, setProducts] = useState();
+  const [isActiveFilter, setIsActiveFilter] = useState("");
+  const [isActive, setIsActive] = useState("");
+  const [buttonText, setButtonText] = useState("Add to Cart");
+  const [cart, setCart] = useState();
 
-  async function fetchData() {
+  async function fetchProducts() {
     try {
       const res = await axios.get("http://localhost:8000/items");
-      console.log(res.data);
+      // console.log(res.data);
       setProducts(res.data);
     } catch (err) {
       console.error(err);
@@ -47,42 +46,58 @@ const ProductPage = () => {
   async function fetchProduct() {
     try {
       await axios.get(`http://localhost:8000${id}`).then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setProduct(res.data);
       });
     } catch (err) {
       console.error(err);
     }
   }
+  const itemIndex = cart?.items.findIndex(
+    (item) => item.itemId === product._id
+  );
+
+  async function fetchCart() {
+    try {
+      await axios
+        .get(
+          `http://localhost:8000/cart/${
+            JSON.parse(window.localStorage.getItem("admin")).id
+          }`
+        )
+        .then((res) => {
+          // console.log(res.data);
+          setCart(res.data);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  // useEffect(() => {
+  //   fetchProducts();
+  //   fetchCart();
+  // }, []);
 
   useEffect(() => {
+    fetchProducts();
     fetchProduct();
-    fetchData();
-  }, [id]);
+    fetchCart();
+  }, [id, cart]);
 
-  var colors = [
-    "#393E41",
-    "#E94F37",
-    "#1C89BF",
-    // "#A1D363",
-    // "#85FFC7",
-    // "#297373",
-    // "#FF8552",
-    // "#A40E4C",
-  ];
+  // var colors = [
+  //   "#393E41",
+  //   "#E94F37",
+  //   "#1C89BF",
+  //   "#A1D363",
+  //   "#85FFC7",
+  //   "#297373",
+  //   "#FF8552",
+  //   "#A40E4C",
+  // ];
 
-  var renderData = [];
-
-  // for (var i = 0; i < colors.length; i++) {
-  //   var color = colors[i];
-  //   renderData.push(<Circle key={i + color} bgColor={color} />);
-  // }
-
-  //axios calls
-
-  // const a = JSON.parse(window.localStorage.getItem("admin"));
-  // // console.log(JSON.parse(a), "hello");
-  // console.log(a?.id);
+  const colors = product?.colors;
+  const sizes = product?.sizes;
 
   async function addtocart() {
     try {
@@ -94,18 +109,24 @@ const ProductPage = () => {
         size: size,
       };
       await axios.post("http://localhost:8000/cart", config).then((res) => {
-        console.log(res.data);
-        alert("Item Added to cart");
+        // console.log(res.data);
+        // alert("Item Added to cart");
       });
+      setButtonText("Added to Cart");
     } catch (err) {
       console.error(err);
     }
   }
 
+  const discprice = Math.round(
+    (product?.price * (100 - product?.discount)) / 100
+  );
+
+  const [count, setCount] = useState(1);
   return (
     product != null && (
       <div className="product-page container">
-        <div className="container pcontent">
+        <div className="container pcontent fontsato">
           <div className="divimg" style={{ display: "flex" }}>
             {/* <div style={{ display: "inline-grid" }} className="mt-4">
               <img src={p2} alt="bgimg" />
@@ -124,76 +145,65 @@ const ProductPage = () => {
             <h1 id="pmatterh1" className="mt-4">
               {product.name}
             </h1>
-            <h1>${product.price}</h1>
+            <div style={{ display: "flex" }}>
+              <h1>${discprice}</h1>
+              <h1
+                className="ms-3"
+                style={{ textDecoration: "line-through", color: "#0000004D" }}
+              >
+                ${product.price}
+              </h1>
+              <div className="center-all disc ms-3 mt-2">
+                <p>-{product.discount}%</p>
+              </div>
+            </div>
             <p id="pmatterp">{product.description}</p>
             <img src={line} alt="lineimg" />
+
             <div>
               <p>Select Colors</p>
-              {/* <div className="colors">{renderData}</div> */}
               <div className="colors">
-                <button
-                  className="active"
-                  onClick={() => {
-                    setColor("Black");
-                  }}
-                  style={{ backgroundColor: "white", border: "none" }}
-                >
-                  <Circle key={colors[0]} bgColor={colors[0]} />
-                </button>
-                <button
-                  onClick={() => {
-                    setColor("Red");
-                  }}
-                  style={{ backgroundColor: "white", border: "none" }}
-                >
-                  <Circle key={1 + colors[1]} bgColor={colors[1]} />
-                </button>
-                <button
-                  onClick={() => {
-                    setColor("Blue");
-                  }}
-                  style={{ backgroundColor: "white", border: "none" }}
-                >
-                  <Circle key={2 + colors[2]} bgColor={colors[2]} />
-                </button>
+                {colors?.map((color) => (
+                  <button
+                    className={`btn ${isActive === color ? "active" : ""}`}
+                    key={color}
+                    style={{
+                      margin: 10,
+                      display: "inline-block",
+                      backgroundColor: color,
+                      borderRadius: "50%",
+
+                      borderWidth: "3px",
+                      width: 30,
+                      height: 30,
+                    }}
+                    onClick={() => {
+                      setIsActive(color);
+                      setColor(color);
+                    }}
+                  ></button>
+                ))}
               </div>
             </div>
             <img src={line} alt="lineimg" className="mb-3" />
             <div>
               <p>Choose Size</p>
-              <div className="sizes ">
-                <button
-                  id="sizebutton"
-                  onClick={() => {
-                    setSize("Small");
-                  }}
-                >
-                  Small
-                </button>
-                <button
-                  id="sizebutton"
-                  onClick={() => {
-                    setSize("Medium");
-                  }}
-                >
-                  Medium
-                </button>
-                <button
-                  id="sizebutton"
-                  onClick={() => {
-                    setSize("Large");
-                  }}
-                >
-                  Large
-                </button>
-                <button
-                  id="sizebutton"
-                  onClick={() => {
-                    setSize("X-Large");
-                  }}
-                >
-                  X-Large
-                </button>
+              <div className="sizes">
+                {sizes?.map((size) => (
+                  <button
+                    className={`mb-2 btn me-3 ${
+                      isActiveFilter === size ? "active" : ""
+                    }`}
+                    key={size}
+                    id="sizebutton"
+                    onClick={() => {
+                      setIsActiveFilter(size);
+                      setSize(size);
+                    }}
+                  >
+                    {size}
+                  </button>
+                ))}
               </div>
             </div>
             <img src={line} alt="lineimg" />
@@ -207,18 +217,26 @@ const ProductPage = () => {
                     setCount(count - 1);
                   }}
                 />
-                <p style={{ padding: "13px 0 0px 0" }}>{count}</p>
+                <p style={{ padding: "13px 0 0px 0" }}>
+                  {cart?.items[itemIndex]?.quantity || count}
+                </p>
                 <img
                   src={plus}
                   alt="plusimg"
                   width={"18px"}
                   onClick={() => {
+                    if (itemIndex > -1) {
+                      setCount(cart?.items[itemIndex]?.quantity);
+                    }
                     setCount(count + 1);
+                    if (itemIndex > -1) {
+                      addtocart();
+                    }
                   }}
                 />
               </div>
               <button id="cartbtn" onClick={addtocart}>
-                Add to Cart
+                {itemIndex > -1 ? "Added to Cart" : "Add to Cart"}
               </button>
             </div>
           </div>

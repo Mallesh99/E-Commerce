@@ -4,6 +4,25 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import Select from "react-select";
+
+const sizeoptions = [
+  { value: "XX-Small", label: "XX-Small" },
+  { value: "X-Small", label: "X-Small" },
+  { value: "Small", label: "Small" },
+  { value: "Medium", label: "Medium" },
+  { value: "Large", label: "Large" },
+  { value: "X-Large", label: "X-Large" },
+  { value: "XX-Large", label: "XX-Large" },
+  { value: "3X-Large", label: "3X-Large" },
+  { value: "4X-Large", label: "4X-Large" },
+];
+const coloroptions = [
+  { value: "Orange", label: "Orange" },
+  { value: "Black", label: "Black" },
+  { value: "Red", label: "Red" },
+  { value: "Blue", label: "Blue" },
+];
 
 const UpdateItem = () => {
   const location = useLocation();
@@ -15,7 +34,13 @@ const UpdateItem = () => {
   const [category, setCategory] = useState(item.category);
   const [price, setPrice] = useState(item.price);
 
+  const [sizes, setSizes] = useState(item.sizes);
+  const [colors, setColors] = useState(item.colors);
+  const [discount, setDiscount] = useState(item.discount);
+
   const handleSubmit = (e) => {
+    const parsercolors = colors.map((color) => color.value);
+    const parsersizes = sizes.map((size) => size.value);
     e.preventDefault();
     const configuration = {
       method: "patch",
@@ -25,6 +50,9 @@ const UpdateItem = () => {
         description,
         category,
         price,
+        sizes: parsersizes,
+        colors: parsercolors,
+        discount,
       },
     };
     axios(configuration)
@@ -101,6 +129,42 @@ const UpdateItem = () => {
             name="price"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Choose Sizes</Form.Label>
+          <Select
+            options={sizeoptions}
+            onChange={(sizes) => {
+              setSizes(sizes || []);
+              // console.log(sizes);
+            }}
+            value={sizes}
+            isMulti
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Choose Colors</Form.Label>
+          <Select
+            options={coloroptions}
+            onChange={(colors) => {
+              setColors(colors || []);
+              console.log(colors);
+            }}
+            value={colors}
+            isMulti
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Discount</Form.Label>
+          <Form.Control
+            type="number"
+            placeholder="Enter discount on the product"
+            name="discount"
+            value={discount}
+            onChange={(e) => setDiscount(e.target.value)}
           />
         </Form.Group>
 

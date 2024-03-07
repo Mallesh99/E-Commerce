@@ -28,7 +28,7 @@ const LoginPage = () => {
     };
     axios(configuration)
       .then((res) => {
-        // console.log(res);
+        console.log(res);
         setLogin(true);
         // alert("Logged In!!");
         window.localStorage.setItem("admin", JSON.stringify(res?.data));

@@ -3,3 +3,9 @@ th,
 td {
   border: 1px solid black;
 }
+
+.single-line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

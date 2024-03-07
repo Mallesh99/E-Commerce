@@ -3,6 +3,7 @@ import axios from "axios";
 import "./Products.css";
 import Button from "react-bootstrap/esm/Button";
 import { Link, useNavigate } from "react-router-dom";
+import Pagination from "./Pagination";
 
 const Products = () => {
   const navigate = useNavigate();
@@ -24,6 +25,15 @@ const Products = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  //pagination code
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [recordsPerPage] = useState(10);
+
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const nPages = Math.ceil(products.length / recordsPerPage);
 
   const deleteItem = (item) => {
     // e.preventDefault();
@@ -48,10 +58,10 @@ const Products = () => {
     <div
       style={{
         width: "100%",
-        padding: "100px",
+        padding: "2rem",
       }}
     >
-      <table>
+      <table className="mb-3">
         <thead>
           <tr>
             {/* <th>Product-ID</th> */}
@@ -59,46 +69,68 @@ const Products = () => {
             <th>Description</th>
             <th>Category</th>
             <th>Price</th>
+            <th>Colors</th>
+            <th>Sizes</th>
+            <th>Discount</th>
             {/* <th>Image</th> */}
             <th></th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {products?.map((item) => {
-            return (
-              <tr>
-                {/* <td>{item._id}</td> */}
-                <td>{item.name}</td>
-                <td>{item.description}</td>
-                <td>{item.category}</td>
-                <td>{item.price}</td>
-                {/* <td>{item.img}</td> */}
-                <td>
-                  <Button variant="success" type="submit">
-                    <Link
-                      to="/updateitem"
-                      state={item}
-                      style={{ textDecoration: "none", color: "white" }}
+          {products
+            ?.slice(indexOfFirstRecord, indexOfLastRecord)
+            .map((item) => {
+              console.log(typeof []);
+              return (
+                <tr>
+                  {/* <td>{item._id}</td> */}
+                  <td className="single-line" style={{ maxWidth: "15vw" }}>
+                    {item.name}
+                  </td>
+                  <td className="single-line" style={{ maxWidth: "10vw" }}>
+                    {item.description}
+                  </td>
+                  <td className="single-line" style={{ maxWidth: "8vw" }}>
+                    {item.category}
+                  </td>
+                  <td>{item.price}</td>
+                  <td>{item.colors}</td>
+                  <td className="single-line" style={{ maxWidth: "10vw" }}>
+                    {item.sizes}
+                  </td>
+                  <td>{item.discount}</td>
+                  {/* <td>{item.img}</td> */}
+                  <td>
+                    <Button variant="success" type="submit">
+                      <Link
+                        to="/updateitem"
+                        state={item}
+                        style={{ textDecoration: "none", color: "white" }}
+                      >
+                        Update Item
+                      </Link>
+                    </Button>
+                  </td>
+                  <td>
+                    <Button
+                      variant="danger"
+                      type="submit"
+                      onClick={(e) => deleteItem(item)}
                     >
-                      Update Item
-                    </Link>
-                  </Button>
-                </td>
-                <td>
-                  <Button
-                    variant="danger"
-                    type="submit"
-                    onClick={(e) => deleteItem(item)}
-                  >
-                    Delete Item
-                  </Button>
-                </td>
-              </tr>
-            );
-          })}
+                      Delete Item
+                    </Button>
+                  </td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
+      <Pagination
+        nPages={nPages}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
 
       <Button
         variant="primary"

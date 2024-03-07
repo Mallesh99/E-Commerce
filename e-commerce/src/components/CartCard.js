@@ -29,6 +29,24 @@ const CartCard = (props) => {
   }
 
   const [count, setCount] = useState(props.quantity);
+
+  async function addtocart() {
+    try {
+      const config = {
+        owner: JSON.parse(window.localStorage.getItem("admin")).id,
+        itemId: props.id,
+        quantity: count,
+        color: props.color,
+        size: props.size,
+      };
+      await axios.post("http://localhost:8000/cart", config).then((res) => {
+        // console.log(res.data);
+        // alert("Item Added to cart");
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
   return (
     <Card className="cardo">
       <Card.Img className="imgprod" variant="top" src={props.img} />
@@ -65,6 +83,8 @@ const CartCard = (props) => {
           width={"10px"}
           onClick={() => {
             setCount(count + 1);
+            console.log(count);
+            addtocart();
           }}
         />
       </div>

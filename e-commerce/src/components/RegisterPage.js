@@ -8,17 +8,19 @@ import { Link } from "react-router-dom";
 const LoginPage = () => {
   //start
 
+  const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [register, setRegister] = useState(false);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     // alert("Submitted!!");
     const configuration = {
       method: "post",
       url: "http://localhost:8000/register",
       data: {
+        fullname,
         email,
         password,
       },
@@ -50,6 +52,18 @@ const LoginPage = () => {
               className="form-control mt-3"
               style={{ border: "none", padding: "0" }}
             >
+              <label>Full Name</label>
+              <input
+                type="text"
+                name="fullname"
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
+              />
+            </div>
+            <div
+              className="form-control mt-3"
+              style={{ border: "none", padding: "0" }}
+            >
               <label>Email</label>
               <input
                 type="text"
@@ -70,6 +84,7 @@ const LoginPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+
             <div
               className="form-control"
               style={{ border: "none", paddingLeft: "0" }}

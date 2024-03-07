@@ -24,8 +24,6 @@
   border-radius: 62px;
   /* padding: 16px, 54px, 16px, 54px; */
   background-color: #f0f0f0;
-  border: none;
-  margin-right: 12px;
 }
 
 #cartbtn {
@@ -71,6 +69,16 @@
 
 .view-all-btn {
   width: 25%;
+}
+
+.disc {
+  width: 4.5vw;
+  background-color: #ff33331a;
+  border-radius: 62px;
+  height: 5vh;
+  /* padding: 5px 24px 4px 24px; */
+  font-size: 20px;
+  color: red;
 }
 
 @media only screen and (max-width: 760px) {
