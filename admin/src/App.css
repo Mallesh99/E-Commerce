@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +35,24 @@
   to {
     transform: rotate(360deg);
   }
+} */
+
+@font-face {
+  font-family: Integral;
+  src: url(./Fontspring-DEMO-integralcf-regular.otf);
+}
+
+@font-face {
+  font-family: Sato;
+  src: url(./Satoshi-Variable.ttf);
+}
+
+.fontIntegral700 {
+  font-family: Integral;
+  font-weight: 700;
+}
+
+.fontsato {
+  font-family: Sato;
+  font-weight: 700;
 }

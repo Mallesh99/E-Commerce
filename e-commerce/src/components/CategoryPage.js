@@ -5,12 +5,13 @@ import Circle from "./Circle";
 import axios from "axios";
 import ProductCard from "./Productcard";
 import line9 from "../images/Line 9.svg";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Pagination from "./Pagination";
 import { useCategory } from "./CategoryContext";
 
 const CategoryPage = () => {
-  const { category, setCategory } = useCategory();
+  const { category, setCategory, search, setSearch } = useCategory();
+  console.log(search, "catsearch");
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const configuration = {
@@ -21,7 +22,7 @@ const CategoryPage = () => {
   async function fetchData() {
     try {
       const res = await axios(configuration);
-      console.log(res.data);
+      // console.log(res.data);
       setProducts(res.data);
     } catch (err) {
       console.error(err);
@@ -57,10 +58,31 @@ const CategoryPage = () => {
 
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const data = products?.filter((item) => {
-    return item.category === category;
+  const data = products?.filter((product) => {
+    if (search === "") {
+      return product.category === category;
+    } else if (
+      product.name.toLowerCase().includes(search) ||
+      product.description.toLowerCase().includes(search) ||
+      product.category.toLowerCase().includes(search)
+    ) {
+      return product;
+    }
+    // return item.category === category;
   });
   const nPages = Math.ceil(data.length / recordsPerPage);
+
+  //for search bar code
+
+  const filteredProducts = products.filter((product) => {
+    if (
+      product.name.toLowerCase().includes(search) ||
+      product.description.toLowerCase().includes(search) ||
+      product.category.toLowerCase().includes(search)
+    ) {
+      return product;
+    }
+  });
   return (
     <div className="container category-page">
       <div className="forfont mt-3 mb-3 filterbox">
@@ -170,7 +192,11 @@ const CategoryPage = () => {
 
       <div className="categorydiv">
         <h1 className="mb-4" style={{ fontFamily: "Sato", fontWeight: "700" }}>
-          {category}
+          {search === ""
+            ? category
+            : data.length === 0
+            ? "No such products available"
+            : "Search Results..."}
         </h1>
         <div className="center-all products-line categoryprod">
           {data.slice(indexOfFirstRecord, indexOfLastRecord).map((item) => {
@@ -184,11 +210,15 @@ const CategoryPage = () => {
             );
           })}
         </div>
-        <Pagination
-          nPages={nPages}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        />
+        {data.length > 0 ? (
+          <Pagination
+            nPages={nPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

@@ -7,46 +7,63 @@ import delicon from "../images/delicon.svg";
 import minus from "../images/Vector.svg";
 import plus from "../images/Vector-1.svg";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  cartDecrement,
+  cartIncrement,
+  removeFromCart,
+} from "../redux/slices/cartSlice";
 
 const CartCard = (props) => {
-  async function deleteitem() {
-    try {
-      await axios
-        .delete(
-          `http://localhost:8000/cart/${
-            JSON.parse(window.localStorage.getItem("admin")).id
-          }?itemId=${props.id}`
-        )
-        .then((res) => {
-          console.log(res.data);
-          // alert("item deleted");
-          res.status(200).send(res.data);
-        });
-    } catch (err) {
-      console.log(err);
-      // alert("item not deleted from cart");
-    }
-  }
+  // async function deleteitem() {
+  //   try {
+  //     await axios
+  //       .delete(
+  //         `http://localhost:8000/cart/${
+  //           JSON.parse(window.localStorage.getItem("admin")).id
+  //         }?itemId=${props.id}`
+  //       )
+  //       .then((res) => {
+  //         console.log(res.data);
+  //         // alert("item deleted");
+  //         res.status(200).send(res.data);
+  //       });
+  //   } catch (err) {
+  //     console.log(err);
+  //     // alert("item not deleted from cart");
+  //   }
+  // }
 
   const [count, setCount] = useState(props.quantity);
 
-  async function addtocart() {
-    try {
-      const config = {
-        owner: JSON.parse(window.localStorage.getItem("admin")).id,
-        itemId: props.id,
-        quantity: count,
-        color: props.color,
-        size: props.size,
-      };
-      await axios.post("http://localhost:8000/cart", config).then((res) => {
-        // console.log(res.data);
-        // alert("Item Added to cart");
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  }
+  const dispatch = useDispatch();
+  const usercart = useSelector((state) => state);
+  // console.log(usercart);
+
+  const existincart = usercart?.cart.cart?.find(
+    (prod) =>
+      props.id === prod.id &&
+      props.size === prod.size &&
+      props.color === prod.color
+  );
+
+  // async function addtocart() {
+  //   try {
+  //     const config = {
+  //       owner: JSON.parse(window.localStorage.getItem("admin")).id,
+  //       itemId: props.id,
+  //       quantity: count,
+  //       color: props.color,
+  //       size: props.size,
+  //     };
+  //     await axios.post("http://localhost:8000/cart", config).then((res) => {
+  //       // console.log(res.data);
+  //       // alert("Item Added to cart");
+  //     });
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }
   return (
     <Card className="cardo">
       <Card.Img className="imgprod" variant="top" src={props.img} />
@@ -64,7 +81,13 @@ const CartCard = (props) => {
         src={delicon}
         alt="delicon"
         onClick={() => {
-          deleteitem();
+          dispatch(
+            removeFromCart({
+              id: props.id,
+              color: props.color,
+              size: props.size,
+            })
+          );
         }}
       />
       <div className="quantity">
@@ -72,8 +95,18 @@ const CartCard = (props) => {
           src={minus}
           alt="minusimg"
           width={"10px"}
-          onClick={() => {
+          onClick={(e) => {
             setCount(count - 1);
+
+            if (existincart) {
+              dispatch(
+                cartDecrement({
+                  id: props.id,
+                  color: props.color,
+                  size: props.size,
+                })
+              );
+            }
           }}
         />
         <p style={{ padding: "2.5px 0 0px 0" }}>{count}</p>
@@ -83,8 +116,16 @@ const CartCard = (props) => {
           width={"10px"}
           onClick={() => {
             setCount(count + 1);
-            console.log(count);
-            addtocart();
+
+            if (existincart) {
+              dispatch(
+                cartIncrement({
+                  id: props.id,
+                  color: props.color,
+                  size: props.size,
+                })
+              );
+            }
           }}
         />
       </div>

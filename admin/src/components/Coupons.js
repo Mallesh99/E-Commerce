@@ -5,19 +5,19 @@ import Button from "react-bootstrap/esm/Button";
 import { Link, useNavigate } from "react-router-dom";
 import Pagination from "./Pagination";
 
-const Products = () => {
+const Coupons = () => {
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
+  const [coupons, setCoupons] = useState([]);
   const configuration = {
     method: "get",
-    url: "http://localhost:8000/items",
+    url: "http://localhost:8000/coupons",
   };
 
   async function fetchData() {
     try {
       const res = await axios(configuration);
       console.log(res.data);
-      setProducts(res.data);
+      setCoupons(res.data);
     } catch (err) {
       console.error(err);
     }
@@ -33,14 +33,14 @@ const Products = () => {
 
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const nPages = Math.ceil(products.length / recordsPerPage);
+  const nPages = Math.ceil(coupons.length / recordsPerPage);
 
-  const deleteItem = (item) => {
+  const deleteCoupon = (coupon) => {
     // e.preventDefault();
     // console.log(item);
     const config = {
       method: "delete",
-      url: `http://localhost:8000/items/${item._id}`,
+      url: `http://localhost:8000/coupons/${coupon._id}`,
     };
     axios(config)
       .then((res) => {
@@ -59,57 +59,44 @@ const Products = () => {
       className="fontsato"
       style={{
         width: "100%",
-        padding: "2rem",
+        padding: "7rem",
+        justifyContent: "center",
+        textAlign: "center",
       }}
     >
-      <table className="mb-3">
+      <table className="mb-3 " style={{ marginLeft: "12rem" }}>
         <thead>
           <tr>
             {/* <th>Product-ID</th> */}
-            <th>Name</th>
-            <th>Description</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>Colors</th>
-            <th>Sizes</th>
+            <th>Coupon Code</th>
+            <th>Start Date</th>
+            <th>End Date</th>
             <th>Discount</th>
-            {/* <th>Image</th> */}
+
             <th></th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {products
+          {coupons
             ?.slice(indexOfFirstRecord, indexOfLastRecord)
-            .map((item) => {
+            .map((coupon) => {
               console.log(typeof []);
               return (
                 <tr>
-                  {/* <td>{item._id}</td> */}
-                  <td className="single-line" style={{ maxWidth: "15vw" }}>
-                    {item.name}
-                  </td>
-                  <td className="single-line" style={{ maxWidth: "10vw" }}>
-                    {item.description}
-                  </td>
-                  <td className="single-line" style={{ maxWidth: "8vw" }}>
-                    {item.category}
-                  </td>
-                  <td>{item.price}</td>
-                  <td>{item.colors.join(",")}</td>
-                  <td className="single-line" style={{ maxWidth: "10vw" }}>
-                    {item.sizes.join(",")}
-                  </td>
-                  <td>{item.discount}</td>
-                  {/* <td>{item.img}</td> */}
+                  <td>{coupon.couponcode}</td>
+                  <td>{coupon.startdate.toString().substring(0, 10)}</td>
+                  <td>{coupon.enddate.toString().substring(0, 10)}</td>
+                  <td>{coupon.discount}</td>
+
                   <td>
                     <Button variant="success" type="submit">
                       <Link
-                        to="/updateitem"
-                        state={item}
+                        to="/updatecoupon"
+                        state={coupon}
                         style={{ textDecoration: "none", color: "white" }}
                       >
-                        Update Item
+                        Update Coupon
                       </Link>
                     </Button>
                   </td>
@@ -117,9 +104,9 @@ const Products = () => {
                     <Button
                       variant="danger"
                       type="submit"
-                      onClick={(e) => deleteItem(item)}
+                      onClick={(e) => deleteCoupon(coupon)}
                     >
-                      Delete Item
+                      Delete Coupon
                     </Button>
                   </td>
                 </tr>
@@ -137,12 +124,12 @@ const Products = () => {
         variant="primary"
         type="submit"
         className="mt-3"
-        onClick={() => navigate("/additem")}
+        onClick={() => navigate("/addcoupon")}
       >
-        Add Item
+        Add Coupon
       </Button>
     </div>
   );
 };
 
-export default Products;
+export default Coupons;

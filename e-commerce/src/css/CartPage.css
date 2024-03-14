@@ -106,6 +106,9 @@
   .cartitems {
     display: inline;
   }
+  .cardbody {
+    width: 16rem;
+  }
 
   .cardo {
     font-size: 10px;

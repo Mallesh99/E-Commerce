@@ -33,6 +33,29 @@ const LoginPage = () => {
         // alert("Logged In!!");
         window.localStorage.setItem("admin", JSON.stringify(res?.data));
         window.location.reload(false);
+        if (
+          JSON.parse(
+            window.localStorage.getItem(
+              JSON.parse(window.localStorage.getItem("admin"))?.id
+            )
+          ) === null
+        ) {
+          window.localStorage.setItem(
+            JSON.parse(window.localStorage.getItem("admin"))?.id,
+            JSON.stringify({
+              cart: [],
+              bill: 0,
+              _persist: { version: -1, rehydrated: true },
+            })
+          );
+        }
+        // window.localStorage.setItem(
+        //   "persist:root",
+
+        //   window.localStorage.getItem(
+        //     JSON.parse(window.localStorage.getItem("admin"))?.id
+        //   )
+        // );
       })
       .catch((err) => {
         // console.log(err);

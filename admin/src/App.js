@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-// import "./App.css";
+import "./App.css";
 import Home from "./components/Home";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Orders from "./components/Orders";
@@ -9,7 +9,11 @@ import Layout from "./components/Layout";
 import AddItem from "./components/AddItem";
 import UpdateItem from "./components/UpdateItem";
 import UpdateUser from "./components/UpdateUser";
+import UpdateOrder from "./components/UpdateOrder";
 import Users from "./components/Users";
+import Coupons from "./components/Coupons";
+import AddCoupon from "./components/AddCoupon";
+import UpdateCoupon from "./UpdateCoupon";
 
 function App() {
   const isAuthenticated = window.localStorage.getItem("admin") != null;
@@ -26,8 +30,12 @@ function App() {
               <Route path="/products" element={<Products />} />
               <Route path="/additem" element={<AddItem />} />
               <Route path="/updateitem" element={<UpdateItem />} />
+              <Route path="/updateorder" element={<UpdateOrder />} />
               <Route path="/users" element={<Users />} />
+              <Route path="/coupons" element={<Coupons />} />
+              <Route path="/addcoupon" element={<AddCoupon />} />
               <Route path="/updateuseremail" element={<UpdateUser />} />
+              <Route path="/updatecoupon" element={<UpdateCoupon />} />
             </Route>
           </>
         )}

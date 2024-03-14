@@ -17,10 +17,6 @@ const CouponSchema = new mongoose.Schema({
   discount: {
     type: Number,
   },
-
-  status: {
-    type: String,
-  },
 });
 
 module.exports = mongoose.model.Coup || mongoose.model("Coup", CouponSchema);

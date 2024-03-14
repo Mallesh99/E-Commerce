@@ -192,6 +192,61 @@ app.get("/items", async (req, res) => {
   }
 });
 
+//read orders end point
+app.get("/orders", async (req, res) => {
+  try {
+    const orders = await Order.find({});
+    res.status(200).send(orders);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+//read coupons end point
+app.get("/coupons", async (req, res) => {
+  try {
+    const coupons = await Coup.find({});
+    res.status(200).send(coupons);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+//get today orders
+app.get("/orders/today", async (req, res) => {
+  var startDate = new Date("2024-03-01");
+  var endDate = new Date("2024-03-31");
+  try {
+    const orders = await Order.find({
+      createdAt: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    });
+    res.status(200).send(orders);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+//get discount coupon
+app.get("/getcoupon/:id", async (req, res) => {
+  try {
+    const coupon = await Coup.findOne({ couponcode: req.params.id });
+    const date = new Date();
+    // console.log(coupon, "NEW");
+    if (coupon) {
+      if (coupon.startdate <= date && coupon.enddate >= date) {
+        res.status(200).send(coupon);
+      } else {
+        res.status(400).send("Not Valid Coupon Code");
+      }
+    } else {
+      res.status(400).send("Not Valid Coupon Code");
+    }
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
 // for users manipulation endpoints
 app.get("/users", async (req, res) => {
   try {
@@ -388,6 +443,34 @@ app.patch("/users/:id", async (req, res) => {
     res.status(400).send(error);
   }
 });
+// update coupon end point
+
+app.patch("/coupons/:id", async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ["couponcode", "startdate", "enddate", "discount"];
+
+  const isValidOperation = updates.every((update) =>
+    allowedUpdates.includes(update)
+  );
+
+  if (!isValidOperation) {
+    return res.status(400).send({ error: "invalid updates" });
+  }
+
+  try {
+    const coupon = await Coup.findOne({ _id: req.params.id });
+
+    if (!coupon) {
+      return res.status(404).send({ error: "not found" });
+    }
+
+    updates.forEach((update) => (coupon[update] = req.body[update]));
+    await coupon.save();
+    res.send(coupon);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
 
 //delete user
 app.delete("/users/:id", async (req, res) => {
@@ -401,6 +484,18 @@ app.delete("/users/:id", async (req, res) => {
     res.status(400).send(error);
   }
 });
+//delete coupon
+app.delete("/coupons/:id", async (req, res) => {
+  try {
+    const deletedCoupon = await Coup.findOneAndDelete({ _id: req.params.id });
+    if (!deletedCoupon) {
+      res.status(404).send({ error: "Coupon not found" });
+    }
+    res.send(deletedCoupon);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
 
 // Cart End Points Start
 
@@ -409,56 +504,56 @@ const { error } = require("console");
 
 //create cart
 
-app.post("/cart", async (req, res) => {
-  // console.log(req);
-  // const user = req.user_id;
+// app.post("/cart", async (req, res) => {
+//   // console.log(req);
+//   // const user = req.user_id;
 
-  const { owner, itemId, quantity, color, size } = req.body;
-  try {
-    const cart = await Cart.findOne({ owner });
-    const item = await Item.findOne({ _id: itemId });
-    if (!item) {
-      res.status(404).send({ message: "item not found" });
-      return;
-    }
-    const price = item.price;
-    const name = item.name;
-    const image = item.image;
-    //If cart already exists for user,
-    if (cart) {
-      const itemIndex = cart.items.findIndex((item) => item.itemId == itemId);
-      //check if product exists or not
-      if (itemIndex > -1) {
-        let product = cart.items[itemIndex];
-        product.quantity = quantity;
-        cart.bill = cart.items.reduce((acc, curr) => {
-          return acc + curr.quantity * curr.price;
-        }, 0);
-        cart.items[itemIndex] = product;
-        await cart.save();
-        res.status(200).send(cart);
-      } else {
-        cart.items.push({ itemId, name, quantity, price, image, color, size });
-        cart.bill = cart.items.reduce((acc, curr) => {
-          return acc + curr.quantity * curr.price;
-        }, 0);
-        await cart.save();
-        res.status(200).send(cart);
-      }
-    } else {
-      //no cart exists, create one
-      const newCart = await Cart.create({
-        owner,
-        items: [{ itemId, name, quantity, price, image, color, size }],
-        bill: quantity * price,
-      });
-      return res.status(201).send(newCart);
-    }
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("something went wrong");
-  }
-});
+//   const { owner, itemId, quantity, color, size } = req.body;
+//   try {
+//     const cart = await Cart.findOne({ owner });
+//     const item = await Item.findOne({ _id: itemId });
+//     if (!item) {
+//       res.status(404).send({ message: "item not found" });
+//       return;
+//     }
+//     const price = item.price;
+//     const name = item.name;
+//     const image = item.image;
+//     //If cart already exists for user,
+//     if (cart) {
+//       const itemIndex = cart.items.findIndex((item) => item.itemId == itemId);
+//       //check if product exists or not
+//       if (itemIndex > -1) {
+//         let product = cart.items[itemIndex];
+//         product.quantity = quantity;
+//         cart.bill = cart.items.reduce((acc, curr) => {
+//           return acc + curr.quantity * curr.price;
+//         }, 0);
+//         cart.items[itemIndex] = product;
+//         await cart.save();
+//         res.status(200).send(cart);
+//       } else {
+//         cart.items.push({ itemId, name, quantity, price, image, color, size });
+//         cart.bill = cart.items.reduce((acc, curr) => {
+//           return acc + curr.quantity * curr.price;
+//         }, 0);
+//         await cart.save();
+//         res.status(200).send(cart);
+//       }
+//     } else {
+//       //no cart exists, create one
+//       const newCart = await Cart.create({
+//         owner,
+//         items: [{ itemId, name, quantity, price, image, color, size }],
+//         bill: quantity * price,
+//       });
+//       return res.status(201).send(newCart);
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send("something went wrong");
+//   }
+// });
 
 // get cart
 app.get("/cart/:id", async (req, res) => {
@@ -508,6 +603,7 @@ app.delete("/cart/:id/", async (req, res) => {
 
 const Coup = require("./db/couponModel");
 const Order = require("./db/orderModel");
+
 app.post("/coupons", async (req, res) => {
   try {
     const newCoup = new Coup({
@@ -521,6 +617,8 @@ app.post("/coupons", async (req, res) => {
     res.status(400).send({ message: "error" });
   }
 });
+
+//add order endpoint
 app.post("/orders", async (req, res) => {
   try {
     const newOrd = new Order({
@@ -534,6 +632,65 @@ app.post("/orders", async (req, res) => {
     res.status(400).send({ message: "error" });
   }
 });
+
+//update an order
+
+app.patch("/orders/:id", async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ["status"];
+
+  const isValidOperation = updates.every((update) =>
+    allowedUpdates.includes(update)
+  );
+
+  if (!isValidOperation) {
+    return res.status(400).send({ error: "invalid updates" });
+  }
+
+  try {
+    const order = await Order.findOne({ _id: req.params.id });
+
+    if (!order) {
+      return res.status(404).send({ error: "not found" });
+    }
+
+    updates.forEach((update) => (order[update] = req.body[update]));
+    await order.save();
+    res.send(order);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+// delete order
+app.delete("/orders/:id", async (req, res) => {
+  try {
+    const deletedOrder = await Order.findOneAndDelete({ _id: req.params.id });
+    if (!deletedOrder) {
+      res.status(404).send({ error: "Item not found" });
+    }
+    res.send(deletedOrder);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+//cart using redux
+
+// app.post("/cart", async (req, res) => {
+//   try {
+//     const deletedItem = await Cart.findOneAndDelete({ owner: req.body.owner });
+//     console.log("deleted", deletedItem);
+
+//     const newCart = await Cart.create({
+//       ...req.body,
+//     });
+//     return res.status(201).send(newCart);
+//   } catch (err) {
+//     console.log({ error });
+//     res.status(400).send({ message: "error" });
+//   }
+// });
 
 app.listen(8000, () => {
   console.log(`Server is running on port 8000.`);

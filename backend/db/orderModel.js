@@ -4,6 +4,9 @@ const ObjectID = mongoose.Schema.Types.ObjectId;
 
 const orderSchema = new mongoose.Schema(
   {
+    ownerName: {
+      type: String,
+    },
     owner: {
       type: ObjectID,
       required: true,
@@ -11,7 +14,7 @@ const orderSchema = new mongoose.Schema(
     },
     items: [
       {
-        itemId: {
+        id: {
           type: ObjectID,
           ref: "Item",
           required: true,
@@ -49,8 +52,14 @@ const orderSchema = new mongoose.Schema(
     address: {
       type: String,
     },
+    paymentType: {
+      type: String,
+    },
     paymentStatus: {
       type: String,
+    },
+    mobilenumber: {
+      type: Number,
     },
   },
   {

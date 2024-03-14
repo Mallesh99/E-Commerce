@@ -9,38 +9,50 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCategory } from "./CategoryContext";
 import { MDBBadge, MDBBtn, MDBIcon } from "mdb-react-ui-kit";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 function BasicExample() {
+  const cart = useSelector((state) => state.cart);
   const { category, setCategory } = useCategory();
   const navigate = useNavigate();
   const user = JSON.parse(window.localStorage.getItem("admin"));
   // console.log(user);
 
-  const [cart, setCart] = useState();
-  async function fetch() {
-    try {
-      await axios
-        .get(
-          `http://localhost:8000/cart/${
-            JSON.parse(window.localStorage.getItem("admin")).id
-          }`
-        )
-        .then((res) => {
-          // console.log(res.data);
-          setCart(res.data);
-        });
-    } catch (err) {
-      console.log(err);
-    }
+  //addtocart
+  // async function addtocart() {
+  //   try {
+  //     const config = {
+  //       owner: JSON.parse(window.localStorage.getItem("admin")).id,
+  //       items: cart.cart,
+  //       bill: cart.bill,
+  //     };
+  //     await axios.post("http://localhost:8000/cart", config).then((res) => {
+  //       // console.log(res.data);
+  //       // alert("Item Added to cart");
+  //     });
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }
+
+  async function logout() {
+    // window.localStorage.setItem("cart", JSON.stringify(cart));
+
+    window.localStorage.setItem(
+      JSON.parse(window.localStorage.getItem("admin"))?.id,
+      JSON.stringify(cart)
+    );
+
+    window.localStorage.removeItem("admin");
+    window.localStorage.removeItem("persist:root");
+    window.location.reload(false);
   }
 
-  useEffect(() => {
-    fetch();
-  }, [cart]);
+  const { search, setSearch } = useCategory();
 
   return (
     <>
-      <div style={{ display: "inline", maxHeight: "100%" }}>
+      <div>
         <div id="discount" className="center-all">
           <p>
             Sign up and get 20% off to your first order.{" "}
@@ -86,17 +98,25 @@ function BasicExample() {
                   className="me-2"
                   aria-label="Search"
                   style={{ borderRadius: "62px" }}
+                  onChange={(e) => {
+                    setSearch(e.target.value.toLowerCase());
+                  }}
+                  onClick={() => {
+                    navigate(`/categorypage`);
+                  }}
                 />
 
                 <img
                   src={cartimg}
                   alt="cart"
                   style={{ marginLeft: "30px", cursor: "pointer" }}
-                  onClick={() => navigate("/cartpage")}
+                  onClick={() => {
+                    navigate("/cartpage");
+                  }}
                 />
                 <a href="#!">
                   <MDBBadge color="danger" notification pill>
-                    {cart?.items.length}
+                    {cart.cart?.length}
                   </MDBBadge>
                 </a>
 
@@ -112,8 +132,9 @@ function BasicExample() {
                   alt="profile"
                   style={{ marginLeft: "9px", cursor: "pointer" }}
                   onClick={() => {
-                    window.localStorage.clear();
-                    window.location.reload(false);
+                    logout();
+                    // window.localStorage.clear();
+                    // window.location.reload(false);
                   }}
                 />
               </Form>

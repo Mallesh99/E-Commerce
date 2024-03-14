@@ -18,11 +18,17 @@ import ReviewCard from "./ReviewCard";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Pagination } from "swiper/modules";
 import "swiper/css";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addToCart,
+  cartDecrement,
+  cartIncrement,
+} from "../redux/slices/cartSlice";
 
 const ProductPage = () => {
+  // console.log(typeof count);
   const [color, setColor] = useState("White");
   const [size, setSize] = useState("Medium");
-  // console.log(typeof count);
   const location = useLocation();
   // console.log(location);
   const id = location.pathname;
@@ -53,26 +59,23 @@ const ProductPage = () => {
       console.error(err);
     }
   }
-  const itemIndex = cart?.items.findIndex(
-    (item) => item.itemId === product._id
-  );
 
-  async function fetchCart() {
-    try {
-      await axios
-        .get(
-          `http://localhost:8000/cart/${
-            JSON.parse(window.localStorage.getItem("admin")).id
-          }`
-        )
-        .then((res) => {
-          // console.log(res.data);
-          setCart(res.data);
-        });
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  // async function fetchCart() {
+  //   try {
+  //     await axios
+  //       .get(
+  //         `http://localhost:8000/cart/${
+  //           JSON.parse(window.localStorage.getItem("admin")).id
+  //         }`
+  //       )
+  //       .then((res) => {
+  //         // console.log(res.data);
+  //         setCart(res.data);
+  //       });
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 
   // useEffect(() => {
   //   fetchProducts();
@@ -82,8 +85,8 @@ const ProductPage = () => {
   useEffect(() => {
     fetchProducts();
     fetchProduct();
-    fetchCart();
-  }, [id, cart]);
+    // fetchCart();
+  }, [id]);
 
   // var colors = [
   //   "#393E41",
@@ -99,33 +102,24 @@ const ProductPage = () => {
   const colors = product?.colors;
   const sizes = product?.sizes;
 
-  async function addtocart() {
-    try {
-      const config = {
-        owner: JSON.parse(window.localStorage.getItem("admin")).id,
-        itemId: product._id,
-        quantity: count,
-        color: color,
-        size: size,
-      };
-      await axios.post("http://localhost:8000/cart", config).then((res) => {
-        // console.log(res.data);
-        // alert("Item Added to cart");
-      });
-      setButtonText("Added to Cart");
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   const discprice = Math.round(
     (product?.price * (100 - product?.discount)) / 100
   );
 
-  const [count, setCount] = useState(1);
+  const dispatch = useDispatch();
+  const usercart = useSelector((state) => state);
+  // console.log(usercart);
+
+  const existincart = usercart?.cart.cart?.find(
+    (prod) =>
+      product?._id === prod.id && size === prod.size && color === prod.color
+  );
+  const [count, setCount] = useState(!existincart ? 1 : existincart.quantity);
+
+  // console.log(!existincart, "heili");
   return (
     product != null && (
-      <div className="product-page container">
+      <div className="product-page">
         <div className="container pcontent fontsato">
           <div className="divimg" style={{ display: "flex" }}>
             {/* <div style={{ display: "inline-grid" }} className="mt-4">
@@ -153,8 +147,8 @@ const ProductPage = () => {
               >
                 ${product.price}
               </h1>
-              <div className="center-all disc ms-3 mt-2">
-                <p>-{product.discount}%</p>
+              <div className="center-all disc ms-3 mt-1">
+                <p className="mt-2">-{product.discount}%</p>
               </div>
             </div>
             <p id="pmatterp">{product.description}</p>
@@ -180,6 +174,7 @@ const ProductPage = () => {
                     onClick={() => {
                       setIsActive(color);
                       setColor(color);
+                      setCount(!existincart ? 1 : existincart.quantity);
                     }}
                   ></button>
                 ))}
@@ -199,6 +194,7 @@ const ProductPage = () => {
                     onClick={() => {
                       setIsActiveFilter(size);
                       setSize(size);
+                      setCount(!existincart ? 1 : existincart.quantity);
                     }}
                   >
                     {size}
@@ -213,30 +209,63 @@ const ProductPage = () => {
                   src={minus}
                   alt="minusimg"
                   width={"18px"}
-                  onClick={() => {
+                  onClick={(e) => {
                     setCount(count - 1);
+
+                    if (existincart) {
+                      dispatch(
+                        cartDecrement({
+                          id: product._id,
+                          color: color,
+                          size: size,
+                        })
+                      );
+                    }
                   }}
                 />
                 <p style={{ padding: "13px 0 0px 0" }}>
-                  {cart?.items[itemIndex]?.quantity || count}
+                  {/* {!existincart ? count : existincart.quantity} */}
+                  {count}
                 </p>
                 <img
                   src={plus}
                   alt="plusimg"
                   width={"18px"}
-                  onClick={() => {
-                    if (itemIndex > -1) {
-                      setCount(cart?.items[itemIndex]?.quantity);
-                    }
+                  onClick={(e) => {
                     setCount(count + 1);
-                    if (itemIndex > -1) {
-                      addtocart();
+
+                    if (existincart) {
+                      dispatch(
+                        cartIncrement({
+                          id: product._id,
+                          color: color,
+                          size: size,
+                        })
+                      );
                     }
                   }}
                 />
               </div>
-              <button id="cartbtn" onClick={addtocart}>
-                {itemIndex > -1 ? "Added to Cart" : "Add to Cart"}
+              {/* <button id="cartbtn" onClick={addtocart}> */}
+              <button
+                id="cartbtn"
+                onClick={(e) => {
+                  if (count > 0) {
+                    dispatch(
+                      addToCart({
+                        id: product._id,
+                        name: product.name,
+                        quantity: count,
+                        price: product.price,
+                        image: product.image,
+                        color: color,
+                        size: size,
+                      })
+                    );
+                  }
+                }}
+              >
+                {!existincart ? "Add to Cart" : "Added to Cart"}
               </button>
             </div>
           </div>
@@ -277,7 +306,7 @@ const ProductPage = () => {
 
         <div className="youmightalsolike">
           <h1 className="center-all mt-5 mb-5">YOU MIGHT ALSO LIKE</h1>
-          <div className="center-all products-line">
+          <div className="center-all container" style={{ width: "80%" }}>
             {/* <ProductCard
               img={a1}
               title="Polo with Contrast Trims"

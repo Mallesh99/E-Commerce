@@ -45,6 +45,13 @@ const HomePage = () => {
   }, []);
   //end
 
+  console.log(
+    window.localStorage.getItem(
+      JSON.parse(window.localStorage.getItem("admin"))?.id
+    ),
+    "console"
+  );
+
   return (
     <div className=" home-page ">
       <div className="content">

@@ -10,6 +10,7 @@ import Layout from "./components/Layout";
 import CategoryPage from "./components/CategoryPage";
 import CartPage from "./components/CartPage";
 import { CategoryProvider } from "./components/CategoryContext";
+import Cart from "./components/Cart";
 
 function App() {
   const isAuthenticated = window.localStorage.getItem("admin") != null;
