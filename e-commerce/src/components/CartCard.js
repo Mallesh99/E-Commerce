@@ -34,9 +34,8 @@ const CartCard = (props) => {
   //   }
   // }
 
-  const [count, setCount] = useState(props.quantity);
-
   const dispatch = useDispatch();
+
   const usercart = useSelector((state) => state);
   // console.log(usercart);
 
@@ -96,8 +95,6 @@ const CartCard = (props) => {
           alt="minusimg"
           width={"10px"}
           onClick={(e) => {
-            setCount(count - 1);
-
             if (existincart) {
               dispatch(
                 cartDecrement({
@@ -109,14 +106,12 @@ const CartCard = (props) => {
             }
           }}
         />
-        <p style={{ padding: "2.5px 0 0px 0" }}>{count}</p>
+        <p style={{ padding: "2.5px 0 0px 0" }}>{props.quantity}</p>
         <img
           src={plus}
           alt="plusimg"
           width={"10px"}
           onClick={() => {
-            setCount(count + 1);
-
             if (existincart) {
               dispatch(
                 cartIncrement({

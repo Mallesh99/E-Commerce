@@ -49,7 +49,14 @@ const CartPage = () => {
       }
 
       // creating a new order
-      const result = await axios.post("http://localhost:8000/payment/orders");
+      const result = await axios.post("http://localhost:8000/payment/orders", {
+        amount:
+          (cart.bill -
+            Math.round(0.01 * discount * cart.bill) +
+            15 +
+            Math.round(0.02 * cart.bill)) *
+          100,
+      });
 
       if (!result) {
         alert("Server error. Are you online?");
@@ -87,7 +94,6 @@ const CartPage = () => {
           alert(result.data.msg);
           if (result.data.msg === "Payment Successful") {
             setPaymentStatus("Paid");
-            placeorder();
           }
         },
         prefill: {
@@ -164,6 +170,11 @@ const CartPage = () => {
   }
 
   console.log(searchCoupon, "searchcoup");
+  useEffect(() => {
+    if (paymentStatus === "Paid") {
+      placeorder();
+    }
+  }, [paymentStatus]);
 
   return (
     cart != null && (
@@ -278,10 +289,10 @@ const CartPage = () => {
               id="cartbtn"
               style={{ width: "100%" }}
               className="mt-3 "
-              onClick={
+              onClick={() =>
                 selectedOption === "Online Payment"
-                  ? displayRazorpay
-                  : placeorder
+                  ? displayRazorpay()
+                  : placeorder()
               }
             >
               {selectedOption === "Online Payment"

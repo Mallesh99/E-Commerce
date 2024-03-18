@@ -6,6 +6,8 @@ const crypto = require("crypto");
 const router = express.Router();
 
 router.post("/orders", async (req, res) => {
+  const { amount } = req.body;
+  // console.log(amount, "amt");
   try {
     const instance = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID,
@@ -13,7 +15,7 @@ router.post("/orders", async (req, res) => {
     });
 
     const options = {
-      amount: 100, // amount in smallest currency unit
+      amount: amount, // amount in smallest currency unit
       currency: "INR",
       receipt: "receipt_order_74394",
     };
@@ -60,7 +62,7 @@ router.post("/success", async (req, res) => {
       orderId: razorpayOrderId,
       paymentId: razorpayPaymentId,
     });
-    console.log(res, "suc res");
+    // console.log(res, "suc res");
   } catch (error) {
     // console.log(error);
     res.status(500).send(error);
