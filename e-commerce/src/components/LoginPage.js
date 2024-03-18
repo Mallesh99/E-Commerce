@@ -67,8 +67,8 @@ const LoginPage = () => {
   //end
 
   return (
-    <div className="page">
-      <div className="info">
+    <div className="page ">
+      <div className="info ">
         <div id="welcome">
           <h1>Hey</h1>
           <h1>Welcome Back!</h1>

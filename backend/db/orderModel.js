@@ -51,6 +51,7 @@ const orderSchema = new mongoose.Schema(
     },
     address: {
       type: String,
+      required: true,
     },
     paymentType: {
       type: String,
@@ -60,6 +61,7 @@ const orderSchema = new mongoose.Schema(
     },
     mobilenumber: {
       type: Number,
+      required: true,
     },
   },
   {

@@ -27,15 +27,11 @@ import {
 
 const ProductPage = () => {
   // console.log(typeof count);
-  const [color, setColor] = useState("White");
-  const [size, setSize] = useState("Medium");
   const location = useLocation();
   // console.log(location);
   const id = location.pathname;
   const [product, setProduct] = useState();
   const [products, setProducts] = useState();
-  const [isActiveFilter, setIsActiveFilter] = useState("");
-  const [isActive, setIsActive] = useState("");
   const [buttonText, setButtonText] = useState("Add to Cart");
   const [cart, setCart] = useState();
 
@@ -53,7 +49,14 @@ const ProductPage = () => {
     try {
       await axios.get(`http://localhost:8000${id}`).then((res) => {
         // console.log(res.data);
+
         setProduct(res.data);
+        setColors(res.data.colors);
+        setSizes(res.data.sizes);
+        setIsActive(res.data.colors[0]);
+        setColor(res.data.colors[0]);
+        setIsActiveFilter(res.data.sizes[0]);
+        setSize(res.data.sizes[0]);
       });
     } catch (err) {
       console.error(err);
@@ -85,8 +88,11 @@ const ProductPage = () => {
   useEffect(() => {
     fetchProducts();
     fetchProduct();
+
     // fetchCart();
   }, [id]);
+  const [colors, setColors] = useState();
+  const [sizes, setSizes] = useState();
 
   // var colors = [
   //   "#393E41",
@@ -99,8 +105,11 @@ const ProductPage = () => {
   //   "#A40E4C",
   // ];
 
-  const colors = product?.colors;
-  const sizes = product?.sizes;
+  const [color, setColor] = useState();
+  const [isActive, setIsActive] = useState();
+
+  const [isActiveFilter, setIsActiveFilter] = useState();
+  const [size, setSize] = useState();
 
   const discprice = Math.round(
     (product?.price * (100 - product?.discount)) / 100
@@ -189,7 +198,7 @@ const ProductPage = () => {
                     className={`mb-2 btn me-3 ${
                       isActiveFilter === size ? "active" : ""
                     }`}
-                    key={size}
+                    key={sizes[0]}
                     id="sizebutton"
                     onClick={() => {
                       setIsActiveFilter(size);
@@ -256,7 +265,7 @@ const ProductPage = () => {
                         id: product._id,
                         name: product.name,
                         quantity: count,
-                        price: product.price,
+                        price: discprice,
                         image: product.image,
                         color: color,
                         size: size,

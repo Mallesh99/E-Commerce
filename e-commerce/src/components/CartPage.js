@@ -6,23 +6,113 @@ import axios from "axios";
 import Form from "react-bootstrap/Form";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteAllFromCart } from "../redux/slices/cartSlice";
+import { useNavigate } from "react-router-dom";
 
 const CartPage = () => {
   const cart = useSelector((state) => state.cart);
 
   const [selectedOption, setSelectedOption] = useState("Online Payment");
+  const [paymentStatus, setPaymentStatus] = useState("Pending");
   const [address, setAddress] = useState("");
   const [mobno, setMobno] = useState();
   const [discount, setDiscount] = useState(0);
   const [searchCoupon, setSearchCoupon] = useState("");
+
+  const navigate = useNavigate();
+
+  //for razorpay
+  function loadScript(src) {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  }
+
+  async function displayRazorpay() {
+    if (address === "" || !mobno) {
+      alert("Fill all required fields");
+    } else {
+      const res = await loadScript(
+        "https://checkout.razorpay.com/v1/checkout.js"
+      );
+
+      if (!res) {
+        alert("Razorpay SDK failed to load. Are you online?");
+        return;
+      }
+
+      // creating a new order
+      const result = await axios.post("http://localhost:8000/payment/orders");
+
+      if (!result) {
+        alert("Server error. Are you online?");
+        return;
+      }
+
+      console.log(result.data, "frontend");
+
+      // Getting the order details back
+      const { amount, id: order_id, currency } = result.data;
+
+      const options = {
+        key: "rzp_test_NRbhnPD8h5jnEC",
+        amount: amount.toString(),
+        currency: currency,
+        name: "E-Commerce Website",
+        description: "Test Transaction",
+        // image: { logo },
+        order_id: order_id,
+        handler: async function (response) {
+          const data = {
+            orderCreationId: order_id,
+            razorpayPaymentId: response.razorpay_payment_id,
+            razorpayOrderId: response.razorpay_order_id,
+            razorpaySignature: response.razorpay_signature,
+          };
+
+          const result = await axios.post(
+            "http://localhost:8000/payment/success",
+            data
+          );
+
+          console.log(result.data, "success res");
+
+          alert(result.data.msg);
+          if (result.data.msg === "Payment Successful") {
+            setPaymentStatus("Paid");
+            placeorder();
+          }
+        },
+        prefill: {
+          name: "Mallesh",
+          email: "mallesh@ecommercewebsite.com",
+          contact: "9999999999",
+        },
+        notes: {
+          address: "E-commerce Website Testing",
+        },
+        theme: {
+          color: "#61dafb",
+        },
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
+    }
+  }
 
   async function searchcoupon() {
     try {
       await axios
         .get(`http://localhost:8000/getcoupon/${searchCoupon}`)
         .then((res) => {
-          console.log(res, "malsh");
-          console.log(res, "cartpage");
           setDiscount(res?.data.discount);
         });
     } catch (err) {
@@ -34,32 +124,42 @@ const CartPage = () => {
 
   //apis
   function placeorder() {
-    try {
-      axios
-        .post("http://localhost:8000/orders", {
-          ownerName: JSON.parse(window.localStorage.getItem("admin")).fullname,
-          owner: JSON.parse(window.localStorage.getItem("admin")).id,
-          items: cart.cart,
-          subtotal: cart.bill,
-          tax: Math.round(0.02 * cart.bill),
-          discount: Math.round(0.01 * discount * cart.bill),
-          grandtotal:
-            cart.bill -
-            Math.round(0.01 * discount * cart.bill) +
-            15 +
-            Math.round(0.02 * cart.bill),
-          status: "New",
-          address: address,
-          paymentType: selectedOption,
-          paymentStatus: "Pending",
-          mobilenumber: mobno,
-        })
-        .then((res) => {
-          dispatch(deleteAllFromCart());
-          console.log(res);
-        });
-    } catch (err) {
-      console.log(err);
+    if (address === "" || !mobno) {
+      alert("Fill all required fields");
+    } else {
+      try {
+        axios
+          .post("http://localhost:8000/orders", {
+            ownerName: JSON.parse(window.localStorage.getItem("admin"))
+              .fullname,
+            owner: JSON.parse(window.localStorage.getItem("admin")).id,
+            items: cart.cart,
+            subtotal: cart.bill,
+            tax: Math.round(0.02 * cart.bill),
+            discount: Math.round(0.01 * discount * cart.bill),
+            grandtotal:
+              cart.bill -
+              Math.round(0.01 * discount * cart.bill) +
+              15 +
+              Math.round(0.02 * cart.bill),
+            status: "New",
+            address: address,
+            paymentType: selectedOption,
+            paymentStatus: paymentStatus,
+            mobilenumber: mobno,
+          })
+          .then((res) => {
+            console.log(res);
+            dispatch(deleteAllFromCart());
+            navigate("/");
+
+            window.scroll(0, 0);
+            alert("Order Placed");
+            console.log(res);
+          });
+      } catch (err) {
+        console.log(err);
+      }
     }
   }
 
@@ -121,6 +221,7 @@ const CartPage = () => {
             >
               Apply
             </button>
+
             <Form.Control
               type="search"
               placeholder="Add promo code"
@@ -151,14 +252,15 @@ const CartPage = () => {
                 Online Payment
               </label>
             </div>
+
             <Form.Group className="mb-3 mt-3">
               <Form.Label>Address</Form.Label>
               <Form.Control
-                type="email"
                 placeholder="Enter delivery address"
                 name="address"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
+                required
               />
             </Form.Group>
             <Form.Group className="mb-3 mt-3">
@@ -169,15 +271,22 @@ const CartPage = () => {
                 name="mobno"
                 value={mobno}
                 onChange={(e) => setMobno(e.target.value)}
+                required
               />
             </Form.Group>
             <button
               id="cartbtn"
               style={{ width: "100%" }}
-              className="mt-3"
-              onClick={placeorder}
+              className="mt-3 "
+              onClick={
+                selectedOption === "Online Payment"
+                  ? displayRazorpay
+                  : placeorder
+              }
             >
-              Place Order
+              {selectedOption === "Online Payment"
+                ? "Proceed to Payment & Place Order"
+                : "Place Order"}
             </button>
           </div>
         </div>

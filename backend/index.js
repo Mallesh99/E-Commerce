@@ -628,8 +628,11 @@ app.post("/orders", async (req, res) => {
     await newOrd.save();
     res.status(201).send(newOrd);
   } catch (error) {
-    console.log({ error });
-    res.status(400).send({ message: "error" });
+    console.log(res);
+
+    res
+      .status(400)
+      .send({ message: "Please Provide Address and Mobile Number" });
   }
 });
 
@@ -691,6 +694,13 @@ app.delete("/orders/:id", async (req, res) => {
 //     res.status(400).send({ message: "error" });
 //   }
 // });
+
+//for razorpay
+
+// middlewares
+app.use(express.json({ extended: false }));
+// route included
+app.use("/payment", require("./routes/payment"));
 
 app.listen(8000, () => {
   console.log(`Server is running on port 8000.`);

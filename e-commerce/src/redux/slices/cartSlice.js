@@ -74,13 +74,13 @@ const cartSlice = createSlice({
         );
         console.log(exist);
         if (exist.quantity === 1) {
+          state.bill -= exist.price;
           state.cart = state.cart.filter(
             (product) =>
               product.id !== prod.id ||
               product.size !== prod.size ||
               product.color !== prod.color
           );
-          state.bill -= exist.price;
         } else {
           exist.quantity--;
           state.bill -= exist.price;
