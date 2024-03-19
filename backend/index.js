@@ -322,6 +322,14 @@ app.post("/register", (request, response) => {
 app.post("/login", (request, response) => {
   User.findOne({ email: request.body.email })
     .then((user) => {
+      //start
+      if (user.block) {
+        return response.status(400).send({
+          message: "You are being blocked by the Admin",
+          error,
+        });
+      }
+      //end
       bcrypt
         .compare(request.body.password, user.password)
 
@@ -431,6 +439,34 @@ app.patch("/users/:id", async (req, res) => {
 
   try {
     const user = await User.findOne({ _id: req.params.id });
+
+    if (!user) {
+      return res.status(404).send({ error: "not found" });
+    }
+
+    updates.forEach((update) => (user[update] = req.body[update]));
+    await user.save();
+    res.send(user);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+app.patch("/block/:id", async (req, res) => {
+  console.log(req.body);
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ["block"];
+
+  const isValidOperation = updates.every((update) =>
+    allowedUpdates.includes(update)
+  );
+
+  if (!isValidOperation) {
+    return res.status(400).send({ error: "invalid updates" });
+  }
+
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    console.log(user);
 
     if (!user) {
       return res.status(404).send({ error: "not found" });

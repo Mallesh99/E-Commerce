@@ -58,7 +58,7 @@ const LoginPage = () => {
         // );
       })
       .catch((err) => {
-        // console.log(err);
+        // alert(err.response.data.message);
         alert("Wrong Credentials");
         err = new Error();
       });

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Products.css";
 import Button from "react-bootstrap/esm/Button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import Pagination from "./Pagination";
 
 const Users = () => {
@@ -23,9 +23,6 @@ const Users = () => {
       console.error(err);
     }
   }
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   //pagination code
   const [currentPage, setCurrentPage] = useState(1);
@@ -57,8 +54,29 @@ const Users = () => {
 
   const [block, setBlock] = useState(false);
 
-  const BlockUser = (user) => {
-    // setBlock(!block);
+  useEffect(() => {
+    fetchData();
+  }, [block]);
+
+  const blockUser = (user) => {
+    const configuration = {
+      method: "patch",
+      url: `http://localhost:8000/block/${user._id}`,
+      data: {
+        block: !block,
+      },
+    };
+    axios(configuration)
+      .then((res) => {
+        // console.log(res.data);
+        setBlock(!block);
+        // alert("User Updated");
+      })
+      .catch((err) => {
+        console.log(err);
+        // alert("User not Updated");
+        err = new Error();
+      });
   };
   return (
     <div
@@ -76,6 +94,7 @@ const Users = () => {
             <th>User Emails</th>
             <th></th>
             <th></th>
+            <th>Block/Unblock</th>
           </tr>
         </thead>
         <tbody>
@@ -107,13 +126,13 @@ const Users = () => {
                     Delete user
                   </Button>
                 </td>
-                <td>
+                <td style={{ textAlign: "center" }}>
                   <Button
                     variant="primary"
                     type="submit"
-                    onClick={(e) => BlockUser(user)}
+                    onClick={(e) => blockUser(user)}
                   >
-                    {block ? "Unblock" : "Block"} User
+                    {user.block ? "Unblock" : "Block"} User
                   </Button>
                 </td>
               </tr>
