@@ -2,9 +2,10 @@ import React from "react";
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import axios from "axios";
+
 import { useLocation, useNavigate } from "react-router-dom";
 import Select from "react-select";
+import { AxiosConfig } from "../axiosConfig";
 
 const sizeoptions = [
   { value: "XX-Small", label: "XX-Small" },
@@ -42,20 +43,16 @@ const UpdateItem = () => {
     const parsercolors = colors.map((color) => color.value);
     const parsersizes = sizes.map((size) => size.value);
     e.preventDefault();
-    const configuration = {
-      method: "patch",
-      url: `http://localhost:8000/items/${item._id}`,
-      data: {
-        name,
-        description,
-        category,
-        price,
-        sizes: parsersizes,
-        colors: parsercolors,
-        discount,
-      },
-    };
-    axios(configuration)
+
+    AxiosConfig.patch(`/products/${item._id}`, {
+      name,
+      description,
+      category,
+      price,
+      sizes: parsersizes,
+      colors: parsercolors,
+      discount,
+    })
       .then((res) => {
         // console.log(res.data);
         navigate("/products");

@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 import "./Products.css";
 import Button from "react-bootstrap/esm/Button";
 import { Link, useNavigate } from "react-router-dom";
 import Pagination from "./Pagination";
+import { AxiosConfig } from "../axiosConfig";
 
 const Coupons = () => {
   const navigate = useNavigate();
   const [coupons, setCoupons] = useState([]);
-  const configuration = {
-    method: "get",
-    url: "http://localhost:8000/coupons",
-  };
 
   async function fetchData() {
     try {
-      const res = await axios(configuration);
+      const res = await AxiosConfig.get("/coupons/getAll");
       console.log(res.data);
       setCoupons(res.data);
     } catch (err) {
@@ -38,11 +35,8 @@ const Coupons = () => {
   const deleteCoupon = (coupon) => {
     // e.preventDefault();
     // console.log(item);
-    const config = {
-      method: "delete",
-      url: `http://localhost:8000/coupons/${coupon._id}`,
-    };
-    axios(config)
+
+    AxiosConfig.delete(`/coupons/${coupon._id}`)
       .then((res) => {
         // console.log(res.data);
         fetchData();
@@ -81,23 +75,30 @@ const Coupons = () => {
           {coupons
             ?.slice(indexOfFirstRecord, indexOfLastRecord)
             .map((coupon) => {
-              console.log(typeof []);
+              // console.log(typeof []);
               return (
                 <tr>
-                  <td>{coupon.couponcode}</td>
-                  <td>{coupon.startdate.toString().substring(0, 10)}</td>
-                  <td>{coupon.enddate.toString().substring(0, 10)}</td>
+                  <td>{coupon.couponCode}</td>
+                  <td>{coupon.startDate.toString().substring(0, 10)}</td>
+                  <td>{coupon.endDate.toString().substring(0, 10)}</td>
                   <td>{coupon.discount}</td>
 
                   <td>
-                    <Button variant="success" type="submit">
-                      <Link
+                    <Button
+                      variant="success"
+                      type="submit"
+                      onClick={() => {
+                        navigate("/updatecoupon", { state: coupon });
+                      }}
+                    >
+                      {/* <Link
                         to="/updatecoupon"
                         state={coupon}
                         style={{ textDecoration: "none", color: "white" }}
                       >
                         Update Coupon
-                      </Link>
+                      </Link> */}
+                      Update Coupon
                     </Button>
                   </td>
                   <td>

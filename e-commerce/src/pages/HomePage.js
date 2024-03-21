@@ -8,21 +8,21 @@ import brandimg2 from "../images/zara-logo-1 1.svg";
 import brandimg3 from "../images/gucci-logo-1 1.svg";
 import brandimg4 from "../images/prada-logo-1 1.svg";
 import brandimg5 from "../images/Group (2).svg";
-import ProductCard from "./Productcard";
-import ReviewCard from "./ReviewCard";
+import ProductCard from "../components/Productcard";
+import ReviewCard from "../components/ReviewCard";
 import line from "../images/Line.svg";
 import casual from "../images/Frame 61.svg";
 import formal from "../images/Frame 62.svg";
 import gym from "../images/Frame 63.svg";
 import party from "../images/Frame 64.svg";
-import axios from "axios";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Pagination } from "swiper/modules";
 
 import "swiper/css";
 
-import { useCategory } from "./CategoryContext";
+import { useCategory } from "../components/CategoryContext";
+import { AxiosConfig } from "../axiosConfig";
 
 const HomePage = () => {
   const { category, setCategory } = useCategory();
@@ -33,7 +33,7 @@ const HomePage = () => {
 
   async function fetchData() {
     try {
-      const res = await axios.get("http://localhost:8000/items");
+      const res = await AxiosConfig.get("/products/getAll");
       console.log(res.data);
       setProducts(res.data);
     } catch (err) {
@@ -47,7 +47,7 @@ const HomePage = () => {
 
   console.log(
     window.localStorage.getItem(
-      JSON.parse(window.localStorage.getItem("admin"))?.id
+      JSON.parse(window.localStorage.getItem("user"))?.id
     ),
     "console"
   );

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import axios from "axios";
+
 import Home from "./Home";
 import { useNavigate } from "react-router-dom";
+import { AxiosConfigWithoutInterceptor } from "../axiosConfig";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -14,15 +15,11 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // alert("Submitted!!");
-    const configuration = {
-      method: "post",
-      url: "http://localhost:8000/loginAdmin",
-      data: {
-        email,
-        password,
-      },
-    };
-    axios(configuration)
+
+    AxiosConfigWithoutInterceptor.post("/admin/loginAdmin", {
+      email,
+      password,
+    })
       .then((res) => {
         console.log(res.data);
         window.localStorage.setItem("admin", JSON.stringify(res?.data));

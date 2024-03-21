@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import CartCard from "./CartCard";
 import "../css/CartPage.css";
 import line6 from "../images/Line 6.svg";
-import axios from "axios";
+
 import Form from "react-bootstrap/Form";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteAllFromCart } from "../redux/slices/cartSlice";
 import { useNavigate } from "react-router-dom";
+import { AxiosConfig } from "../axiosConfig";
 
 const CartPage = () => {
   const cart = useSelector((state) => state.cart);
@@ -49,7 +50,7 @@ const CartPage = () => {
       }
 
       // creating a new order
-      const result = await axios.post("http://localhost:8000/payment/orders", {
+      const result = await AxiosConfig.post("/orders/payment", {
         amount:
           (cart.bill -
             Math.round(0.01 * discount * cart.bill) +
@@ -84,8 +85,8 @@ const CartPage = () => {
             razorpaySignature: response.razorpay_signature,
           };
 
-          const result = await axios.post(
-            "http://localhost:8000/payment/success",
+          const result = await AxiosConfig.post(
+            "/orders/payment/success",
             data
           );
 
@@ -116,11 +117,11 @@ const CartPage = () => {
 
   async function searchcoupon() {
     try {
-      await axios
-        .get(`http://localhost:8000/getcoupon/${searchCoupon}`)
-        .then((res) => {
+      await AxiosConfig.get(`/coupons/getcoupon/${searchCoupon}`).then(
+        (res) => {
           setDiscount(res?.data.discount);
-        });
+        }
+      );
     } catch (err) {
       console.log(err);
     }
@@ -134,35 +135,31 @@ const CartPage = () => {
       alert("Fill all required fields");
     } else {
       try {
-        axios
-          .post("http://localhost:8000/orders", {
-            ownerName: JSON.parse(window.localStorage.getItem("admin"))
-              .fullname,
-            owner: JSON.parse(window.localStorage.getItem("admin")).id,
-            items: cart.cart,
-            subtotal: cart.bill,
-            tax: Math.round(0.02 * cart.bill),
-            discount: Math.round(0.01 * discount * cart.bill),
-            grandtotal:
-              cart.bill -
-              Math.round(0.01 * discount * cart.bill) +
-              15 +
-              Math.round(0.02 * cart.bill),
-            status: "New",
-            address: address,
-            paymentType: selectedOption,
-            paymentStatus: paymentStatus,
-            mobilenumber: mobno,
-          })
-          .then((res) => {
-            console.log(res);
-            dispatch(deleteAllFromCart());
-            navigate("/");
+        AxiosConfig.post("/orders/create", {
+          ownerName: JSON.parse(window.localStorage.getItem("user")).fullName,
+          owner: JSON.parse(window.localStorage.getItem("user")).id,
+          items: cart.cart,
+          subTotal: cart.bill,
+          tax: Math.round(0.02 * cart.bill),
+          discount: Math.round(0.01 * discount * cart.bill),
+          grandTotal:
+            cart.bill -
+            Math.round(0.01 * discount * cart.bill) +
+            15 +
+            Math.round(0.02 * cart.bill),
+          address: address,
+          paymentType: selectedOption,
+          paymentStatus: paymentStatus,
+          mobileNumber: mobno,
+        }).then((res) => {
+          console.log(res);
+          dispatch(deleteAllFromCart());
+          navigate("/");
 
-            window.scroll(0, 0);
-            alert("Order Placed");
-            console.log(res);
-          });
+          window.scroll(0, 0);
+          alert("Order Placed");
+          console.log(res);
+        });
       } catch (err) {
         console.log(err);
       }

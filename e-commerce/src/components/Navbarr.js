@@ -4,25 +4,25 @@ import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
 import cartimg from "../images/Frame.svg";
 import profileimg from "../images/Vector (2).svg";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCategory } from "./CategoryContext";
-import { MDBBadge, MDBBtn, MDBIcon } from "mdb-react-ui-kit";
-import axios from "axios";
+import { MDBBadge } from "mdb-react-ui-kit";
+
 import { useSelector } from "react-redux";
 
-function BasicExample() {
+const Navbarr = () => {
   const cart = useSelector((state) => state.cart);
   const { category, setCategory } = useCategory();
   const navigate = useNavigate();
-  const user = JSON.parse(window.localStorage.getItem("admin"));
+  const user = JSON.parse(window.localStorage.getItem("user"));
   // console.log(user);
 
   //addtocart
   // async function addtocart() {
   //   try {
   //     const config = {
-  //       owner: JSON.parse(window.localStorage.getItem("admin")).id,
+  //       owner: JSON.parse(window.localStorage.getItem("user")).id,
   //       items: cart.cart,
   //       bill: cart.bill,
   //     };
@@ -39,7 +39,7 @@ function BasicExample() {
     // window.localStorage.setItem("cart", JSON.stringify(cart));
 
     window.localStorage.setItem(
-      JSON.parse(window.localStorage.getItem("admin"))?.id,
+      JSON.parse(window.localStorage.getItem("user"))?.id,
       JSON.stringify(cart)
     );
 
@@ -138,13 +138,13 @@ function BasicExample() {
                   }}
                 />
               </Form>
-              <p className="mt-3 ms-2">Hi, {user.fullname}</p>
+              <p className="mt-3 ms-2">Hi, {user.fullName}</p>
             </Navbar.Collapse>
           </Container>
         </Navbar>
       </div>
     </>
   );
-}
+};
 
-export default BasicExample;
+export default Navbarr;

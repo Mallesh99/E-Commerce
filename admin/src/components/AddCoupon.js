@@ -1,14 +1,14 @@
 import React, { useState, useRef } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import axios from "axios";
 
 import { useNavigate } from "react-router-dom";
+import { AxiosConfig } from "../axiosConfig";
 
 const AddCoupon = () => {
-  const [couponcode, setCouponcode] = useState("");
-  const [startdate, setStartdate] = useState();
-  const [enddate, setEnddate] = useState();
+  const [couponCode, setCouponCode] = useState();
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
   const [discount, setDiscount] = useState();
   const navigate = useNavigate();
 
@@ -18,10 +18,10 @@ const AddCoupon = () => {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:8000/coupons", {
-        couponcode,
-        startdate,
-        enddate,
+      await AxiosConfig.post("http://localhost:8000/coupons/addCoupon", {
+        couponCode,
+        startDate,
+        endDate,
         discount,
       });
       navigate("/coupons");
@@ -57,9 +57,9 @@ const AddCoupon = () => {
           <Form.Control
             type="text"
             placeholder="Enter Coupon Code"
-            name="couponcode"
-            value={couponcode}
-            onChange={(e) => setCouponcode(e.target.value)}
+            name="couponCode"
+            value={couponCode}
+            onChange={(e) => setCouponCode(e.target.value)}
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -67,9 +67,9 @@ const AddCoupon = () => {
           <Form.Control
             type="date"
             placeholder="Select Coupon Start Date"
-            name="startdate"
-            value={startdate}
-            onChange={(e) => setStartdate(e.target.value)}
+            name="startDate"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -77,9 +77,9 @@ const AddCoupon = () => {
           <Form.Control
             type="date"
             placeholder="Select Coupon End Date"
-            name="enddate"
-            value={enddate}
-            onChange={(e) => setEnddate(e.target.value)}
+            name="endDate"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
           />
         </Form.Group>
 

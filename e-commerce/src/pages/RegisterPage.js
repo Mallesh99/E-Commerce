@@ -2,33 +2,27 @@ import "../css/LoginPage.css";
 import React, { useState } from "react";
 import bgimg from "../images/91fa59e6781adbdced82e349bb595d99 1.svg";
 // import rec2 from "../images/Rectangle 2@2x.svg";
-import axios from "axios";
+
 import { Link } from "react-router-dom";
+import { AxiosConfigWithoutInterceptor } from "../axiosConfig";
 
-const LoginPage = () => {
-  //start
-
-  const [fullname, setFullname] = useState("");
+const RegisterPage = () => {
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [register, setRegister] = useState(false);
 
   const handleSubmit = (e) => {
     // e.preventDefault();
     // alert("Submitted!!");
-    const configuration = {
-      method: "post",
-      url: "http://localhost:8000/register",
-      data: {
-        fullname,
-        email,
-        password,
-      },
-    };
-    axios(configuration)
+
+    AxiosConfigWithoutInterceptor.post("/users/register", {
+      fullName,
+      email,
+      password,
+    })
       .then((res) => {
         // console.log(res);
-        setRegister(true);
+
         alert("Registered!!");
       })
       .catch((err) => {
@@ -36,8 +30,6 @@ const LoginPage = () => {
         err = new Error();
       });
   };
-
-  //end
 
   return (
     <div className="page">
@@ -55,9 +47,9 @@ const LoginPage = () => {
               <label>Full Name</label>
               <input
                 type="text"
-                name="fullname"
-                value={fullname}
-                onChange={(e) => setFullname(e.target.value)}
+                name="fullName"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
               />
             </div>
             <div
@@ -109,12 +101,6 @@ const LoginPage = () => {
                 Register
               </button>
             </div>
-
-            {/* {register ? (
-              <p className="text-success">You Are Registered Successfully</p>
-            ) : (
-              <p className="text-danger">You Are Not Registered</p>
-            )} */}
           </form>
 
           <p className="center-all mt-2">
@@ -129,69 +115,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
-
-//using bootstrap below
-
-// import "../css/LoginPage.css";
-// import React, { useState } from "react";
-// import bgimg from "../images/91fa59e6781adbdced82e349bb595d99 1.svg";
-// // import rec2 from "../images/Rectangle 2@2x.svg";
-// import axios from "axios";
-// import { Link } from "react-router-dom";
-// import Formcom from "./Form";
-
-// const LoginPage = () => {
-//   //start
-
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [register, setRegister] = useState(false);
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     // alert("Submitted!!");
-//     const configuration = {
-//       method: "post",
-//       url: "http://localhost:8000/register",
-//       data: {
-//         email,
-//         password,
-//       },
-//     };
-//     axios(configuration)
-//       .then((res) => {
-//         // console.log(res);
-//         setRegister(true);
-//         alert("Registered!!");
-//       })
-//       .catch((err) => {
-//         // console.log(err);
-//         err = new Error();
-//       });
-//   };
-
-//   //end
-
-//   return (
-//     <div className="page">
-//       <div className="info">
-//         <div id="welcome">
-//           <h1>Hello there!</h1>
-//           <h4>Register here using email</h4>
-//         </div>
-//         <div className="hello">
-//           <Formcom />
-//           <p>
-//             Already have an account? <Link to="/login">Sign In here!</Link>{" "}
-//           </p>
-//         </div>
-//       </div>
-//       <div className="bg-img">
-//         <img src={bgimg} alt="background" width={"100%"} height={"100%"} />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default LoginPage;
+export default RegisterPage;

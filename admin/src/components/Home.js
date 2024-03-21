@@ -1,20 +1,16 @@
-import axios from "axios";
 import Sidebar from "./Sidebar";
 import React, { useEffect, useState } from "react";
+import { AxiosConfig } from "../axiosConfig";
 
 //for bar graph
 import { BarChart } from "@mui/x-charts/BarChart";
 
 const Home = () => {
   const [monthorders, setmonthOrders] = useState([]);
-  const configuration = {
-    method: "get",
-    url: "http://localhost:8000/orders/today",
-  };
 
   async function fetchData() {
     try {
-      const res = await axios(configuration);
+      const res = await AxiosConfig.get("/orders/today");
       // console.log(typeof res.data[0].createdAt);
       setmonthOrders(res.data);
     } catch (err) {

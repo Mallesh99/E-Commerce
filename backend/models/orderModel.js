@@ -32,7 +32,7 @@ const orderSchema = new mongoose.Schema(
         size: String,
       },
     ],
-    subtotal: {
+    subTotal: {
       type: Number,
       required: true,
       default: 0,
@@ -43,11 +43,12 @@ const orderSchema = new mongoose.Schema(
     discount: {
       type: Number,
     },
-    grandtotal: {
+    grandTotal: {
       type: Number,
     },
     status: {
       type: String,
+      default: "New",
     },
     address: {
       type: String,
@@ -59,7 +60,7 @@ const orderSchema = new mongoose.Schema(
     paymentStatus: {
       type: String,
     },
-    mobilenumber: {
+    mobileNumber: {
       type: Number,
       required: true,
     },

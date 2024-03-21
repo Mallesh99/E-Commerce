@@ -1,27 +1,24 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import line from "../images/Line 9.svg";
 import "../css/CategoryPage.css";
-import Circle from "./Circle";
-import axios from "axios";
-import ProductCard from "./Productcard";
+import Circle from "../components/Circle";
+
+import ProductCard from "../components/Productcard";
 import line9 from "../images/Line 9.svg";
 import { useLocation, useNavigate } from "react-router-dom";
-import Pagination from "./Pagination";
-import { useCategory } from "./CategoryContext";
+import Pagination from "../components/Pagination";
+import { useCategory } from "../components/CategoryContext";
+import { AxiosConfig } from "../axiosConfig";
 
 const CategoryPage = () => {
   const { category, setCategory, search, setSearch } = useCategory();
   console.log(search, "catsearch");
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
-  const configuration = {
-    method: "get",
-    url: "http://localhost:8000/items",
-  };
 
   async function fetchData() {
     try {
-      const res = await axios(configuration);
+      const res = await AxiosConfig.get("/products/getAll");
       // console.log(res.data);
       setProducts(res.data);
     } catch (err) {

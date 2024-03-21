@@ -1,8 +1,7 @@
-import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import React from "react";
 
-function BasicExample(props) {
+const ReviewCard = (props) => {
   return (
     <Card style={{ width: "100%" }}>
       <Card.Body>
@@ -12,6 +11,6 @@ function BasicExample(props) {
       </Card.Body>
     </Card>
   );
-}
+};
 
-export default BasicExample;
+export default ReviewCard;

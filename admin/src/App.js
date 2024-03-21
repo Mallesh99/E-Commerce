@@ -13,7 +13,7 @@ import UpdateOrder from "./components/UpdateOrder";
 import Users from "./components/Users";
 import Coupons from "./components/Coupons";
 import AddCoupon from "./components/AddCoupon";
-import UpdateCoupon from "./UpdateCoupon";
+import UpdateCoupon from "./components/UpdateCoupon";
 
 function App() {
   const isAuthenticated = window.localStorage.getItem("admin") != null;

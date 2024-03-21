@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 import "./Products.css";
 import Button from "react-bootstrap/esm/Button";
 import { Link, useNavigate } from "react-router-dom";
 import Pagination from "./Pagination";
+import { AxiosConfig } from "../axiosConfig";
 
 const Orders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
-  const configuration = {
-    method: "get",
-    url: "http://localhost:8000/orders",
-  };
 
   async function fetchData() {
     try {
-      const res = await axios(configuration);
+      const res = await AxiosConfig.get("/orders/getAll");
       console.log(res.data);
       setOrders(res.data);
     } catch (err) {
@@ -38,11 +35,8 @@ const Orders = () => {
   const deleteorder = (order) => {
     // e.preventDefault();
     // console.log(order);
-    const config = {
-      method: "delete",
-      url: `http://localhost:8000/orders/${order._id}`,
-    };
-    axios(config)
+
+    AxiosConfig.delete(`/orders/${order._id}`)
       .then((res) => {
         // console.log(res.data);
         fetchData();
@@ -93,23 +87,23 @@ const Orders = () => {
                     ),
                   ].join(",")}
                 </td>
-                <td>{order.grandtotal}</td>
+                <td>{order.grandTotal}</td>
                 <td>{order.status}</td>
                 <td className="single-line" style={{ maxWidth: "10vw" }}>
                   {order.address}
                 </td>
                 <td>{order.paymentStatus}</td>
-                <td>{order.mobilenumber}</td>
+                <td>{order.mobileNumber}</td>
                 {/* <td>{order.img}</td> */}
                 <td>
-                  <Button variant="success" type="submit">
-                    <Link
-                      to="/updateorder"
-                      state={order}
-                      style={{ textDecoration: "none", color: "white" }}
-                    >
-                      Update order
-                    </Link>
+                  <Button
+                    variant="success"
+                    type="submit"
+                    onClick={() => {
+                      navigate("/updateorder", { state: order });
+                    }}
+                  >
+                    Update order
                   </Button>
                 </td>
                 <td>

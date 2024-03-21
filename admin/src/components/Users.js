@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 import "./Products.css";
 import Button from "react-bootstrap/esm/Button";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Pagination from "./Pagination";
+import { AxiosConfig } from "../axiosConfig";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
-  const configuration = {
-    method: "get",
-    url: "http://localhost:8000/users",
-  };
 
   const navigate = useNavigate();
 
   async function fetchData() {
     try {
-      const res = await axios(configuration);
+      const res = await AxiosConfig.get("/users/getAll");
       console.log(res.data);
       setUsers(res.data);
     } catch (err) {
@@ -36,11 +33,8 @@ const Users = () => {
   const deleteUser = (user) => {
     // e.preventDefault();
     // console.log(user);
-    const config = {
-      method: "delete",
-      url: `http://localhost:8000/users/${user._id}`,
-    };
-    axios(config)
+
+    AxiosConfig.delete(`/users/${user._id}`)
       .then((res) => {
         // console.log(res.data);
         fetchData();
@@ -59,14 +53,9 @@ const Users = () => {
   }, [block]);
 
   const blockUser = (user) => {
-    const configuration = {
-      method: "patch",
-      url: `http://localhost:8000/block/${user._id}`,
-      data: {
-        block: !block,
-      },
-    };
-    axios(configuration)
+    AxiosConfig.patch(`/users/block/${user._id}`, {
+      block: !block,
+    })
       .then((res) => {
         // console.log(res.data);
         setBlock(!block);
@@ -98,23 +87,23 @@ const Users = () => {
           </tr>
         </thead>
         <tbody>
-          {users?.map((user) => {
+          {users?.slice(indexOfFirstRecord, indexOfLastRecord).map((user) => {
             return (
               <tr>
                 {/* <td>{user._id}</td> */}
 
-                <td>{user.fullname}</td>
+                <td>{user.fullName}</td>
                 <td>{user.email}</td>
 
                 <td>
-                  <Button variant="success" type="submit">
-                    <Link
-                      to="/updateuseremail"
-                      state={user}
-                      style={{ textDecoration: "none", color: "white" }}
-                    >
-                      Update User Email
-                    </Link>
+                  <Button
+                    variant="success"
+                    type="submit"
+                    onClick={() => {
+                      navigate("/updateuseremail", { state: user });
+                    }}
+                  >
+                    Update User Email
                   </Button>
                 </td>
                 <td>

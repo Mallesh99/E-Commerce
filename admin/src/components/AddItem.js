@@ -1,9 +1,10 @@
 import React, { useState, useRef } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import axios from "axios";
+
 import FormSelect from "react-bootstrap/esm/FormSelect";
 import Select from "react-select";
+import { AxiosConfig } from "../axiosConfig";
 
 const sizeoptions = [
   { value: "XX-Small", label: "XX-Small" },
@@ -53,12 +54,11 @@ const AddItem = () => {
 
     try {
       console.log(sizes);
-      const data = await axios.post(
-        "http://localhost:8000/items",
-        formData,
-        config
+      await AxiosConfig.post("/products/addProduct", formData, config).then(
+        (res) => {
+          alert("Item Added");
+        }
       );
-      alert("Item Added");
       // console.log(data);
     } catch (err) {
       console.log(err);

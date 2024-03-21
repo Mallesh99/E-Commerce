@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 import "./Products.css";
 import Button from "react-bootstrap/esm/Button";
 import { Link, useNavigate } from "react-router-dom";
 import Pagination from "./Pagination";
+import { AxiosConfig } from "../axiosConfig";
 
 const Products = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
-  const configuration = {
-    method: "get",
-    url: "http://localhost:8000/items",
-  };
 
   async function fetchData() {
     try {
-      const res = await axios(configuration);
+      const res = await AxiosConfig.get("/products/getAll");
       console.log(res.data);
       setProducts(res.data);
     } catch (err) {
@@ -38,11 +35,8 @@ const Products = () => {
   const deleteItem = (item) => {
     // e.preventDefault();
     // console.log(item);
-    const config = {
-      method: "delete",
-      url: `http://localhost:8000/items/${item._id}`,
-    };
-    axios(config)
+
+    AxiosConfig.delete(`/products/${item._id}`)
       .then((res) => {
         // console.log(res.data);
         fetchData();
@@ -103,14 +97,14 @@ const Products = () => {
                   <td>{item.discount}</td>
                   {/* <td>{item.img}</td> */}
                   <td>
-                    <Button variant="success" type="submit">
-                      <Link
-                        to="/updateitem"
-                        state={item}
-                        style={{ textDecoration: "none", color: "white" }}
-                      >
-                        Update Item
-                      </Link>
+                    <Button
+                      variant="success"
+                      type="submit"
+                      onClick={() => {
+                        navigate("/updateitem", { state: item });
+                      }}
+                    >
+                      Update Item
                     </Button>
                   </td>
                   <td>

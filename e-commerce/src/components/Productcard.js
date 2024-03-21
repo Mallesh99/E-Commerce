@@ -3,7 +3,7 @@ import Card from "react-bootstrap/Card";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-function BasicExample(props) {
+const Productcard = (props) => {
   const navigate = useNavigate();
   return (
     <Card
@@ -31,6 +31,5 @@ function BasicExample(props) {
       </Card.Body>
     </Card>
   );
-}
-
-export default BasicExample;
+};
+export default Productcard;

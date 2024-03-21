@@ -2,28 +2,28 @@ import React from "react";
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import axios from "axios";
-import { useLocation } from "react-router-dom";
 
-const UpdateItem = () => {
+import { useLocation, useNavigate } from "react-router-dom";
+import { AxiosConfig } from "../axiosConfig";
+
+const UpdateUser = () => {
   const location = useLocation();
   const user = location.state;
+
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState(user.email);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const configuration = {
-      method: "patch",
-      url: `http://localhost:8000/users/${user._id}`,
-      data: {
-        email,
-      },
-    };
-    axios(configuration)
+
+    AxiosConfig.patch(`/users/${user._id}`, {
+      email,
+    })
       .then((res) => {
         // console.log(res.data);
-        alert("User Updated");
+        // alert("User Updated");
+        navigate("/users");
       })
       .catch((err) => {
         // console.log(err);
@@ -71,4 +71,4 @@ const UpdateItem = () => {
   );
 };
 
-export default UpdateItem;
+export default UpdateUser;

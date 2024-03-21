@@ -2,9 +2,10 @@ import React from "react";
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import axios from "axios";
+
 import { useLocation, useNavigate } from "react-router-dom";
 import Select from "react-select";
+import { AxiosConfig } from "../axiosConfig";
 
 const statusOptions = [
   { value: "New", label: "New" },
@@ -23,14 +24,10 @@ const UpdateOrder = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const configuration = {
-      method: "patch",
-      url: `http://localhost:8000/orders/${order._id}`,
-      data: {
-        status,
-      },
-    };
-    axios(configuration)
+
+    AxiosConfig.patch(`/orders/${order._id}`, {
+      status,
+    })
       .then((res) => {
         // console.log(res.data);
         navigate("/orders");

@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
 
 const CouponSchema = new mongoose.Schema({
-  couponcode: {
+  couponCode: {
     type: String,
     required: true,
   },
 
-  startdate: {
+  startDate: {
     type: Date,
   },
 
-  enddate: {
+  endDate: {
     type: Date,
   },
 

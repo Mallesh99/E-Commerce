@@ -5,12 +5,12 @@ const cartSlice = createSlice({
   initialState: {
     cart: JSON.parse(
       window.localStorage.getItem(
-        JSON.parse(window.localStorage.getItem("admin"))?.id
+        JSON.parse(window.localStorage.getItem("user"))?.id
       )
     )?.cart,
     bill: JSON.parse(
       window.localStorage.getItem(
-        JSON.parse(window.localStorage.getItem("admin"))?.id
+        JSON.parse(window.localStorage.getItem("user"))?.id
       )
     )?.bill,
   },

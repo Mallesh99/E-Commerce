@@ -6,7 +6,7 @@ import a1 from "../images/a1.svg";
 import delicon from "../images/delicon.svg";
 import minus from "../images/Vector.svg";
 import plus from "../images/Vector-1.svg";
-import axios from "axios";
+
 import { useDispatch, useSelector } from "react-redux";
 import {
   cartDecrement,
@@ -20,7 +20,7 @@ const CartCard = (props) => {
   //     await axios
   //       .delete(
   //         `http://localhost:8000/cart/${
-  //           JSON.parse(window.localStorage.getItem("admin")).id
+  //           JSON.parse(window.localStorage.getItem("user")).id
   //         }?itemId=${props.id}`
   //       )
   //       .then((res) => {
@@ -49,7 +49,7 @@ const CartCard = (props) => {
   // async function addtocart() {
   //   try {
   //     const config = {
-  //       owner: JSON.parse(window.localStorage.getItem("admin")).id,
+  //       owner: JSON.parse(window.localStorage.getItem("user")).id,
   //       itemId: props.id,
   //       quantity: count,
   //       color: props.color,

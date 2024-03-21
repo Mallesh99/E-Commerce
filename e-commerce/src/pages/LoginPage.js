@@ -5,8 +5,9 @@ import or from "../images/Frame 18.svg";
 import goog from "../images/Google.svg";
 import micr from "../images/Microsoft.svg";
 // import rec2 from "../images/Rectangle 2@2x.svg";
-import axios from "axios";
+
 import { Link } from "react-router-dom";
+import { AxiosConfigWithoutInterceptor } from "../axiosConfig";
 
 const LoginPage = () => {
   //start
@@ -18,30 +19,26 @@ const LoginPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // alert("Submitted!!");
-    const configuration = {
-      method: "post",
-      url: "http://localhost:8000/login",
-      data: {
-        email,
-        password,
-      },
-    };
-    axios(configuration)
+    console.log("hi");
+    AxiosConfigWithoutInterceptor.post("/users/login", {
+      email,
+      password,
+    })
       .then((res) => {
         console.log(res);
         setLogin(true);
         // alert("Logged In!!");
-        window.localStorage.setItem("admin", JSON.stringify(res?.data));
+        window.localStorage.setItem("user", JSON.stringify(res?.data));
         window.location.reload(false);
         if (
           JSON.parse(
             window.localStorage.getItem(
-              JSON.parse(window.localStorage.getItem("admin"))?.id
+              JSON.parse(window.localStorage.getItem("user"))?.id
             )
           ) === null
         ) {
           window.localStorage.setItem(
-            JSON.parse(window.localStorage.getItem("admin"))?.id,
+            JSON.parse(window.localStorage.getItem("user"))?.id,
             JSON.stringify({
               cart: [],
               bill: 0,
@@ -53,7 +50,7 @@ const LoginPage = () => {
         //   "persist:root",
 
         //   window.localStorage.getItem(
-        //     JSON.parse(window.localStorage.getItem("admin"))?.id
+        //     JSON.parse(window.localStorage.getItem("user"))?.id
         //   )
         // );
       })
