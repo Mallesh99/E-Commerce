@@ -4,7 +4,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Layout from "./components/Layout";
-import CartPage from "./components/CartPage";
+
 import { CategoryProvider } from "./components/CategoryContext";
 import Cart from "./components/Cart";
 import LoginPage from "./pages/LoginPage";
@@ -13,12 +13,18 @@ import HomePage from "./pages/HomePage";
 import ProductPage from "./pages/ProductPage";
 import CategoryPage from "./pages/CategoryPage";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import CartPage from "./pages/CartPage";
+
 function App() {
   const isAuthenticated = window.localStorage.getItem("user") != null;
   console.log(window.localStorage.getItem("user"));
+
   return (
     <CategoryProvider>
       {" "}
+      <ToastContainer />
       <Routes>
         {!isAuthenticated && (
           <>

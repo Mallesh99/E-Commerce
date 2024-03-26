@@ -6,6 +6,9 @@ import { Link, useNavigate } from "react-router-dom";
 import Pagination from "./Pagination";
 import { AxiosConfig } from "../axiosConfig";
 
+import delicon from "../images/delicon.svg";
+import editicon from "../images/edit.png";
+
 const Products = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
@@ -50,10 +53,10 @@ const Products = () => {
 
   return (
     <div
-      className="fontsato"
+      className="fontsato "
       style={{
         width: "100%",
-        padding: "2rem",
+        padding: "1.5rem 2rem",
       }}
     >
       <table className="mb-3">
@@ -89,15 +92,23 @@ const Products = () => {
                   <td className="single-line" style={{ maxWidth: "8vw" }}>
                     {item.category}
                   </td>
-                  <td>{item.price}</td>
+                  <td className="center">{item.price}</td>
                   <td>{item.colors.join(",")}</td>
                   <td className="single-line" style={{ maxWidth: "10vw" }}>
                     {item.sizes.join(",")}
                   </td>
-                  <td>{item.discount}</td>
+                  <td className="center">{item.discount}</td>
                   {/* <td>{item.img}</td> */}
                   <td>
-                    <Button
+                    <img
+                      className="icon"
+                      src={editicon}
+                      alt="editicon"
+                      onClick={() => {
+                        navigate("/updateitem", { state: item });
+                      }}
+                    />
+                    {/* <Button
                       variant="success"
                       type="submit"
                       onClick={() => {
@@ -105,16 +116,22 @@ const Products = () => {
                       }}
                     >
                       Update Item
-                    </Button>
+                    </Button> */}
                   </td>
                   <td>
-                    <Button
-                      variant="danger"
+                    <img
+                      className="icon"
+                      src={delicon}
+                      alt="delicon"
+                      onClick={() => deleteItem(item)}
+                    />
+                    {/* <Button
+                      variant="white"
                       type="submit"
                       onClick={(e) => deleteItem(item)}
                     >
                       Delete Item
-                    </Button>
+                    </Button> */}
                   </td>
                 </tr>
               );
@@ -130,7 +147,7 @@ const Products = () => {
       <Button
         variant="primary"
         type="submit"
-        className="mt-3"
+        // className="mt-2"
         onClick={() => navigate("/additem")}
       >
         Add Item

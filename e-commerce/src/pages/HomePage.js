@@ -45,12 +45,43 @@ const HomePage = () => {
   }, []);
   //end
 
-  console.log(
-    window.localStorage.getItem(
-      JSON.parse(window.localStorage.getItem("user"))?.id
-    ),
-    "console"
-  );
+  // console.log(
+  //   window.localStorage.getItem(
+  //     JSON.parse(window.localStorage.getItem("user"))?.id
+  //   ),
+  //   "console"
+  // );
+
+  const setCategoryCasual = () => {
+    navigate("/categorypage");
+    setCategory("Casual");
+    return window.scrollTo(0, 0);
+  };
+  const setCategoryFormal = () => {
+    navigate("/categorypage");
+    setCategory("Formal");
+    return window.scrollTo(0, 0);
+  };
+  const setCategoryParty = () => {
+    navigate("/categorypage");
+    setCategory("Party");
+    return window.scrollTo(0, 0);
+  };
+  const setCategoryGym = () => {
+    navigate("/categorypage");
+    setCategory("Gym");
+    return window.scrollTo(0, 0);
+  };
+  const setCategoryNewArrivals = () => {
+    navigate("/categorypage");
+    setCategory("New-Arrivals");
+    return window.scrollTo(0, 0);
+  };
+  const setCategoryTopSelling = () => {
+    navigate("/categorypage");
+    setCategory("Top-Selling");
+    return window.scrollTo(0, 0);
+  };
 
   return (
     <div className=" home-page ">
@@ -62,13 +93,7 @@ const HomePage = () => {
             designed to bring out your individuality and cater to your sense of
             style.
           </p>
-          <button
-            id="matterbutton"
-            onClick={() => {
-              navigate("/categorypage");
-              setCategory("New-Arrivals");
-            }}
-          >
+          <button id="matterbutton" onClick={setCategoryNewArrivals}>
             Shop Now
           </button>
           <div className="count">
@@ -189,14 +214,7 @@ const HomePage = () => {
           </Swiper>
         </div>
         <div className="center-all mt-4 mb-4">
-          <button
-            className="view-all-btn"
-            onClick={() => {
-              navigate("/categorypage");
-
-              setCategory("New-Arrivals");
-            }}
-          >
+          <button className="view-all-btn" onClick={setCategoryNewArrivals}>
             View All
           </button>
         </div>
@@ -253,14 +271,7 @@ const HomePage = () => {
           </Swiper>
         </div>
         <div className="center-all mt-4 mb-4">
-          <button
-            className="view-all-btn"
-            onClick={() => {
-              navigate("/categorypage");
-
-              setCategory("Top-Selling");
-            }}
-          >
+          <button className="view-all-btn" onClick={setCategoryTopSelling}>
             View All
           </button>
         </div>
@@ -276,40 +287,28 @@ const HomePage = () => {
                 className="curp casualimg"
                 src={casual}
                 alt="casualimg"
-                onClick={() => {
-                  navigate("/categorypage");
-                  setCategory("Casual");
-                }}
+                onClick={setCategoryCasual}
               />
 
               <img
                 src={formal}
                 className="curp formalimg"
                 alt="formalimg"
-                onClick={() => {
-                  navigate("/categorypage");
-                  setCategory("Formal");
-                }}
+                onClick={setCategoryFormal}
               />
 
               <img
                 src={party}
                 className="curp partyimg"
                 alt="partyimg"
-                onClick={() => {
-                  navigate("/categorypage");
-                  setCategory("Party");
-                }}
+                onClick={setCategoryParty}
               />
 
               <img
                 src={gym}
                 className="curp gymimg"
                 alt="gymimg"
-                onClick={() => {
-                  navigate("/categorypage");
-                  setCategory("Gym");
-                }}
+                onClick={setCategoryGym}
               />
             </div>
           </div>

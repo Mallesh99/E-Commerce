@@ -63,6 +63,38 @@ const CartCard = (props) => {
   //     console.error(err);
   //   }
   // }
+
+  const increase = () => {
+    if (existincart) {
+      dispatch(
+        cartIncrement({
+          id: props.id,
+          color: props.color,
+          size: props.size,
+        })
+      );
+    }
+  };
+  const decrease = () => {
+    if (existincart) {
+      dispatch(
+        cartDecrement({
+          id: props.id,
+          color: props.color,
+          size: props.size,
+        })
+      );
+    }
+  };
+  const remove = () => {
+    dispatch(
+      removeFromCart({
+        id: props.id,
+        color: props.color,
+        size: props.size,
+      })
+    );
+  };
   return (
     <Card className="cardo">
       <Card.Img className="imgprod" variant="top" src={props.img} />
@@ -75,54 +107,11 @@ const CartCard = (props) => {
         <Card.Text>${props.cost}</Card.Text>
       </Card.Body>
 
-      <img
-        className="delicon"
-        src={delicon}
-        alt="delicon"
-        onClick={() => {
-          dispatch(
-            removeFromCart({
-              id: props.id,
-              color: props.color,
-              size: props.size,
-            })
-          );
-        }}
-      />
+      <img className="delicon" src={delicon} alt="delicon" onClick={remove} />
       <div className="quantity">
-        <img
-          src={minus}
-          alt="minusimg"
-          width={"10px"}
-          onClick={(e) => {
-            if (existincart) {
-              dispatch(
-                cartDecrement({
-                  id: props.id,
-                  color: props.color,
-                  size: props.size,
-                })
-              );
-            }
-          }}
-        />
+        <img src={minus} alt="minusimg" width={"10px"} onClick={decrease} />
         <p style={{ padding: "2.5px 0 0px 0" }}>{props.quantity}</p>
-        <img
-          src={plus}
-          alt="plusimg"
-          width={"10px"}
-          onClick={() => {
-            if (existincart) {
-              dispatch(
-                cartIncrement({
-                  id: props.id,
-                  color: props.color,
-                  size: props.size,
-                })
-              );
-            }
-          }}
-        />
+        <img src={plus} alt="plusimg" width={"10px"} onClick={increase} />
       </div>
     </Card>
   );

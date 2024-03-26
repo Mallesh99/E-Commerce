@@ -6,6 +6,9 @@ import { Link, useNavigate } from "react-router-dom";
 import Pagination from "./Pagination";
 import { AxiosConfig } from "../axiosConfig";
 
+import delicon from "../images/delicon.svg";
+import editicon from "../images/edit.png";
+
 const Coupons = () => {
   const navigate = useNavigate();
   const [coupons, setCoupons] = useState([]);
@@ -53,7 +56,7 @@ const Coupons = () => {
       className="fontsato"
       style={{
         width: "100%",
-        padding: "7rem",
+        padding: "3rem",
         justifyContent: "center",
         textAlign: "center",
       }}
@@ -84,31 +87,38 @@ const Coupons = () => {
                   <td>{coupon.discount}</td>
 
                   <td>
-                    <Button
+                    <img
+                      className="icon"
+                      src={editicon}
+                      alt="editicon"
+                      onClick={() => {
+                        navigate("/updatecoupon", { state: coupon });
+                      }}
+                    />
+                    {/* <Button
                       variant="success"
                       type="submit"
                       onClick={() => {
                         navigate("/updatecoupon", { state: coupon });
                       }}
                     >
-                      {/* <Link
-                        to="/updatecoupon"
-                        state={coupon}
-                        style={{ textDecoration: "none", color: "white" }}
-                      >
-                        Update Coupon
-                      </Link> */}
                       Update Coupon
-                    </Button>
+                    </Button> */}
                   </td>
                   <td>
-                    <Button
+                    <img
+                      className="icon"
+                      src={delicon}
+                      alt="delicon"
+                      onClick={(e) => deleteCoupon(coupon)}
+                    />
+                    {/* <Button
                       variant="danger"
                       type="submit"
                       onClick={(e) => deleteCoupon(coupon)}
                     >
                       Delete Coupon
-                    </Button>
+                    </Button> */}
                   </td>
                 </tr>
               );

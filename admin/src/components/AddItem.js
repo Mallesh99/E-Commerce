@@ -5,6 +5,7 @@ import Form from "react-bootstrap/Form";
 import FormSelect from "react-bootstrap/esm/FormSelect";
 import Select from "react-select";
 import { AxiosConfig } from "../axiosConfig";
+import { toast } from "react-toastify";
 
 const sizeoptions = [
   { value: "XX-Small", label: "XX-Small" },
@@ -34,34 +35,86 @@ const AddItem = () => {
   const [discount, setDiscount] = useState();
   // const inputRef = useRef();
 
-  const handleSubmit = async (e) => {
-    // e.preventDefault();
-    // alert("Submitted!!");
-    const parsercolors = colors.map((color) => color.value);
-    console.log(parsercolors, "bro");
-    const parsersizes = sizes.map((size) => size.value);
-    e.preventDefault();
-    let formData = new FormData();
-    formData.append("name", name);
-    formData.append("description", description);
-    formData.append("category", category);
-    formData.append("price", price);
-    parsersizes.forEach((item) => formData.append("sizes[]", item));
-    parsercolors.forEach((item) => formData.append("colors[]", item));
-    formData.append("discount", discount);
-    formData.append("image", image);
-    const config = { headers: { "Content-Type": "multipart/form-data" } };
+  const [errors, setErrors] = useState({});
 
-    try {
-      console.log(sizes);
-      await AxiosConfig.post("/products/addProduct", formData, config).then(
-        (res) => {
-          alert("Item Added");
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {};
+    if (!name) {
+      newErrors.name = "Name is required";
+      isValid = false;
+    }
+    if (!description) {
+      newErrors.description = "Description is required";
+      isValid = false;
+    }
+    if (!image) {
+      newErrors.image = "Image is required";
+      isValid = false;
+    }
+    if (!category) {
+      newErrors.category = "Category is required";
+      isValid = false;
+    }
+    if (!price) {
+      newErrors.price = "Price is required";
+      isValid = false;
+    }
+    if (sizes.length === 0) {
+      newErrors.sizes = "Size is required";
+      isValid = false;
+    }
+    if (colors.length === 0) {
+      newErrors.colors = "Color is required";
+      isValid = false;
+    }
+    if (!discount) {
+      newErrors.discount = "Discount is required";
+      isValid = false;
+    } else if (discount <= 0 || discount > 100) {
+      newErrors.discount = "Enter valid discount";
+      isValid = false;
+    }
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // alert("Submitted!!");
+
+    if (validateForm()) {
+      const parsercolors = colors.map((color) => color.value);
+      console.log(parsercolors, "bro");
+      const parsersizes = sizes.map((size) => size.value);
+      e.preventDefault();
+      let formData = new FormData();
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("category", category);
+      formData.append("price", price);
+      parsersizes.forEach((item) => formData.append("sizes[]", item));
+      parsercolors.forEach((item) => formData.append("colors[]", item));
+      formData.append("discount", discount);
+      formData.append("image", image);
+      const config = { headers: { "Content-Type": "multipart/form-data" } };
+
+      try {
+        console.log(sizes);
+        await AxiosConfig.post("/products/addProduct", formData, config).then(
+          (res) => {
+            alert("Item Added");
+          }
+        );
+        // console.log(data);
+      } catch (err) {
+        // console.log(err.response.data.errors);
+        if (err.response.data.errors) {
+          err.response.data.errors.forEach((element) =>
+            toast(element.msg, { style: { background: "#fff2df" } })
+          );
         }
-      );
-      // console.log(data);
-    } catch (err) {
-      console.log(err);
+      }
     }
   };
   return (
@@ -94,6 +147,7 @@ const AddItem = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
+          {errors.name && <div className="validationError">{errors.name}</div>}
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Description</Form.Label>
@@ -104,6 +158,9 @@ const AddItem = () => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
+          {errors.description && (
+            <div className="validationError">{errors.description}</div>
+          )}
         </Form.Group>
 
         <Form.Group controlId="formFile" className="mb-3">
@@ -115,6 +172,9 @@ const AddItem = () => {
             name="image"
             type="file"
           />
+          {errors.image && (
+            <div className="validationError">{errors.image}</div>
+          )}
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Category</Form.Label>
@@ -125,6 +185,9 @@ const AddItem = () => {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           />
+          {errors.category && (
+            <div className="validationError">{errors.category}</div>
+          )}
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Price</Form.Label>
@@ -135,6 +198,9 @@ const AddItem = () => {
             value={price}
             onChange={(e) => setPrice(e.target.value)}
           />
+          {errors.price && (
+            <div className="validationError">{errors.price}</div>
+          )}
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -148,6 +214,9 @@ const AddItem = () => {
             value={sizes}
             isMulti
           />
+          {errors.sizes && (
+            <div className="validationError">{errors.sizes}</div>
+          )}
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Choose Colors</Form.Label>
@@ -160,6 +229,9 @@ const AddItem = () => {
             value={colors}
             isMulti
           />
+          {errors.colors && (
+            <div className="validationError">{errors.colors}</div>
+          )}
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -171,6 +243,9 @@ const AddItem = () => {
             value={discount}
             onChange={(e) => setDiscount(e.target.value)}
           />
+          {errors.discount && (
+            <div className="validationError">{errors.discount}</div>
+          )}
         </Form.Group>
 
         <Button variant="primary" type="submit">

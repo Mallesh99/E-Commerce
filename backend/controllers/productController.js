@@ -1,20 +1,26 @@
 const Item = require("../models/itemModel");
+const { validationResult } = require("express-validator");
 
 const addProduct = async (req, res) => {
-  try {
-    // console.log(req.body);
-    const newItem = new Item({
-      ...req.body,
-      image: `http://192.168.50.131:8000/images/${req.file.originalname}`,
-    });
+  const errors = validationResult(req);
+  if (errors.isEmpty()) {
+    try {
+      // console.log(req.body);
+      const newItem = new Item({
+        ...req.body,
+        image: `http://192.168.50.131:8000/images/${req.file.originalname}`,
+      });
 
-    // console.log(newItem.image);
+      // console.log(newItem.image);
 
-    await newItem.save();
-    res.status(201).send(newItem);
-  } catch (error) {
-    console.log({ error });
-    res.status(400).send({ message: "error" });
+      await newItem.save();
+      res.status(201).send(newItem);
+    } catch (error) {
+      console.log({ error });
+      res.status(400).send({ message: "error" });
+    }
+  } else {
+    res.status(422).json({ errors: errors.array() });
   }
 };
 

@@ -6,6 +6,9 @@ import { Link, useNavigate } from "react-router-dom";
 import Pagination from "./Pagination";
 import { AxiosConfig } from "../axiosConfig";
 
+import delicon from "../images/delicon.svg";
+import editicon from "../images/edit.png";
+
 const Orders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
@@ -96,7 +99,15 @@ const Orders = () => {
                 <td>{order.mobileNumber}</td>
                 {/* <td>{order.img}</td> */}
                 <td>
-                  <Button
+                  <img
+                    className="icon"
+                    src={editicon}
+                    alt="editicon"
+                    onClick={() => {
+                      navigate("/updateorder", { state: order });
+                    }}
+                  />
+                  {/* <Button
                     variant="success"
                     type="submit"
                     onClick={() => {
@@ -104,16 +115,22 @@ const Orders = () => {
                     }}
                   >
                     Update order
-                  </Button>
+                  </Button> */}
                 </td>
                 <td>
-                  <Button
+                  <img
+                    className="icon"
+                    src={delicon}
+                    alt="delicon"
+                    onClick={(e) => deleteorder(order)}
+                  />
+                  {/* <Button
                     variant="danger"
                     type="submit"
                     onClick={(e) => deleteorder(order)}
                   >
                     Delete order
-                  </Button>
+                  </Button> */}
                 </td>
               </tr>
             );

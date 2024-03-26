@@ -37,6 +37,50 @@ const SetThings = (prod) => {
   );
   const [count, setCount] = useState(!existincart ? 1 : existincart.quantity);
 
+  const decrease = () => {
+    setCount(count - 1);
+
+    if (existincart) {
+      dispatch(
+        cartDecrement({
+          id: product._id,
+          color: color,
+          size: size,
+        })
+      );
+    }
+  };
+
+  const increase = () => {
+    setCount(count + 1);
+
+    if (existincart) {
+      dispatch(
+        cartIncrement({
+          id: product._id,
+          color: color,
+          size: size,
+        })
+      );
+    }
+  };
+
+  const add = () => {
+    if (count > 0) {
+      dispatch(
+        addToCart({
+          id: product._id,
+          name: product.name,
+          quantity: count,
+          price: discprice,
+          image: product.image,
+          color: color,
+          size: size,
+        })
+      );
+    }
+  };
+
   return (
     <div>
       <div>
@@ -90,66 +134,15 @@ const SetThings = (prod) => {
       <img src={line} alt="lineimg" />
       <div style={{ display: "flex" }} className="mt-3">
         <div className="pquantity">
-          <img
-            src={minus}
-            alt="minusimg"
-            width={"18px"}
-            onClick={(e) => {
-              setCount(count - 1);
-
-              if (existincart) {
-                dispatch(
-                  cartDecrement({
-                    id: product._id,
-                    color: color,
-                    size: size,
-                  })
-                );
-              }
-            }}
-          />
+          <img src={minus} alt="minusimg" width={"18px"} onClick={decrease} />
           <p style={{ padding: "13px 0 0px 0" }}>
             {/* {!existincart ? count : existincart.quantity} */}
             {count}
           </p>
-          <img
-            src={plus}
-            alt="plusimg"
-            width={"18px"}
-            onClick={(e) => {
-              setCount(count + 1);
-
-              if (existincart) {
-                dispatch(
-                  cartIncrement({
-                    id: product._id,
-                    color: color,
-                    size: size,
-                  })
-                );
-              }
-            }}
-          />
+          <img src={plus} alt="plusimg" width={"18px"} onClick={increase} />
         </div>
         {/* <button id="cartbtn" onClick={addtocart}> */}
-        <button
-          id="cartbtn"
-          onClick={(e) => {
-            if (count > 0) {
-              dispatch(
-                addToCart({
-                  id: product._id,
-                  name: product.name,
-                  quantity: count,
-                  price: discprice,
-                  image: product.image,
-                  color: color,
-                  size: size,
-                })
-              );
-            }
-          }}
-        >
+        <button id="cartbtn" onClick={add}>
           {!existincart ? "Add to Cart" : "Added to Cart"}
         </button>
       </div>

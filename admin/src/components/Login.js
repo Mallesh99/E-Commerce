@@ -25,6 +25,7 @@ const Login = () => {
         window.localStorage.setItem("admin", JSON.stringify(res?.data));
         setLogin(true);
         // alert("Logged In!!");
+        navigate("/");
         window.location.reload(false);
       })
       .catch((err) => {

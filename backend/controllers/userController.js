@@ -1,93 +1,107 @@
 const User = require("../models/userModel");
 
 const bcrypt = require("bcrypt");
+const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 
-const registerUser = (request, response) => {
-  bcrypt
-    .hash(request.body.password, 10)
-    .then((hashedPassword) => {
-      const user = new User({
-        fullName: request.body.fullName,
-        email: request.body.email,
-        password: hashedPassword,
-      });
-
-      user
-        .save()
-        .then((result) => {
-          response.status(201).send({
-            message: "User Created Successfully",
-            result,
-          });
-        })
-        .catch((error) => {
-          response.status(500).send({
-            message: "Error creating user",
-            error,
-          });
+const registerUser = async (request, response) => {
+  const userExists = await User.findOne({ email: request.body.email });
+  if (!userExists) {
+    bcrypt
+      .hash(request.body.password, 10)
+      .then((hashedPassword) => {
+        const user = new User({
+          fullName: request.body.fullName,
+          email: request.body.email,
+          password: hashedPassword,
         });
-    })
-    .catch((e) => {
-      response.status(500).send({
-        message: "Password was not hashed successfully",
-        e,
+
+        user
+          .save()
+          .then((result) => {
+            response.status(201).send({
+              message: "User Created Successfully",
+              result,
+            });
+          })
+          .catch((error) => {
+            response.status(500).send({
+              message: "Error creating user",
+              error,
+            });
+          });
+      })
+      .catch((e) => {
+        response.status(500).send({
+          message: "Password was not hashed successfully",
+          e,
+        });
       });
+  } else {
+    response.status(500).send({
+      message: "User already exists",
     });
+  }
 };
 
 const loginUser = (request, response) => {
-  User.findOne({ email: request.body.email })
-    .then((user) => {
-      //start
-      if (user.block) {
-        return response.status(400).send({
-          message: "You are being blocked by the Admin",
-          error,
-        });
-      }
-      //end
-      bcrypt
-        .compare(request.body.password, user.password)
+  const errors = validationResult(request);
+  if (errors.isEmpty()) {
+    // in case request params meet the validation criteria
+    User.findOne({ email: request.body.email })
+      .then((user) => {
+        //start
+        if (user.block) {
+          return response.status(400).send({
+            message: "You are being blocked by the Admin",
+            error,
+          });
+        }
+        //end
+        bcrypt
+          .compare(request.body.password, user.password)
 
-        .then((passwordCheck) => {
-          if (!passwordCheck) {
-            return response.status(400).send({
+          .then((passwordCheck) => {
+            if (!passwordCheck) {
+              return response.status(400).send({
+                message: "Passwords does not match",
+                error,
+              });
+            }
+
+            const token = jwt.sign(
+              {
+                userId: user._id,
+                userEmail: user.email,
+              },
+              "eywqwornfiohvlkdigiohggnprgjnb",
+              { expiresIn: "24h" }
+            ); //imp
+
+            response.status(200).send({
+              fullName: user.fullName,
+              message: "Login Successful",
+              email: user.email,
+              id: user._id,
+              token,
+            });
+          })
+          .catch((error) => {
+            response.status(400).send({
               message: "Passwords does not match",
               error,
             });
-          }
-
-          const token = jwt.sign(
-            {
-              userId: user._id,
-              userEmail: user.email,
-            },
-            "eywqwornfiohvlkdigiohggnprgjnb",
-            { expiresIn: "24h" }
-          ); //imp
-
-          response.status(200).send({
-            fullName: user.fullName,
-            message: "Login Successful",
-            email: user.email,
-            id: user._id,
-            token,
           });
-        })
-        .catch((error) => {
-          response.status(400).send({
-            message: "Passwords does not match",
-            error,
-          });
+      })
+      .catch((e) => {
+        response.status(404).send({
+          message: "Email not found",
+          e,
         });
-    })
-    .catch((e) => {
-      response.status(404).send({
-        message: "Email not found",
-        e,
       });
-    });
+  } else {
+    response.status(422).json({ errors: errors.array() });
+  }
 };
 
 const updateUser = async (req, res) => {

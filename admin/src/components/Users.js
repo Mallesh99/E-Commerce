@@ -6,6 +6,9 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import Pagination from "./Pagination";
 import { AxiosConfig } from "../axiosConfig";
 
+import delicon from "../images/delicon.svg";
+import editicon from "../images/edit.png";
+
 const Users = () => {
   const [users, setUsers] = useState([]);
 
@@ -50,7 +53,7 @@ const Users = () => {
 
   useEffect(() => {
     fetchData();
-  }, [block]);
+  }, [block, users]);
 
   const blockUser = (user) => {
     AxiosConfig.patch(`/users/block/${user._id}`, {
@@ -72,7 +75,7 @@ const Users = () => {
       className="fontsato "
       style={{
         width: "100%",
-        padding: "100px",
+        padding: "3rem",
       }}
     >
       <table style={{ marginLeft: "12rem" }} className="mb-3">
@@ -96,7 +99,15 @@ const Users = () => {
                 <td>{user.email}</td>
 
                 <td>
-                  <Button
+                  <img
+                    className="icon"
+                    src={editicon}
+                    alt="editicon"
+                    onClick={() => {
+                      navigate("/updateuseremail", { state: user });
+                    }}
+                  />
+                  {/* <Button
                     variant="success"
                     type="submit"
                     onClick={() => {
@@ -104,16 +115,22 @@ const Users = () => {
                     }}
                   >
                     Update User Email
-                  </Button>
+                  </Button> */}
                 </td>
                 <td>
-                  <Button
+                  <img
+                    className="icon"
+                    src={delicon}
+                    alt="delicon"
+                    onClick={(e) => deleteUser(user)}
+                  />
+                  {/* <Button
                     variant="danger"
                     type="submit"
                     onClick={(e) => deleteUser(user)}
                   >
                     Delete user
-                  </Button>
+                  </Button> */}
                 </td>
                 <td style={{ textAlign: "center" }}>
                   <Button

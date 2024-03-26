@@ -1,16 +1,21 @@
 const Coup = require("../models/couponModel");
 
 const addCoupon = async (req, res) => {
-  try {
-    const newCoup = new Coup({
-      ...req.body,
-    });
+  const coupExists = await Coup.findOne({ couponCode: req.body.couponCode });
+  if (!coupExists) {
+    try {
+      const newCoup = new Coup({
+        ...req.body,
+      });
 
-    await newCoup.save();
-    res.status(201).send(newCoup);
-  } catch (error) {
-    console.log({ error });
-    res.status(400).send({ message: "error" });
+      await newCoup.save();
+      res.status(201).send(newCoup);
+    } catch (error) {
+      console.log({ error });
+      res.status(400).send({ message: "error" });
+    }
+  } else {
+    res.status(400).send({ message: "Coupon already exists" });
   }
 };
 
@@ -25,18 +30,17 @@ const getAllCoupons = async (req, res) => {
 
 const searchCoupon = async (req, res) => {
   try {
-    const coupon = await Coup.findOne({ couponCode: req.params.id });
+    const id = req.params.id;
+    const coupon = await Coup.findOne({ couponCode: id });
     const date = new Date();
     // console.log(coupon, "NEW");
     if (coupon) {
       if (coupon.startDate <= date && coupon.endDate >= date) {
-        res.status(200).send(coupon);
-      } else {
-        res.status(400).send("Not Valid Coupon Code");
+        return res.status(200).send(coupon);
       }
-    } else {
-      res.status(400).send("Not Valid Coupon Code");
+      return res.status(400).send("Coupon Expired");
     }
+    res.status(400).send("Not Valid Coupon Code");
   } catch (error) {
     res.status(400).send(error);
   }

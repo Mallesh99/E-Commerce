@@ -56,3 +56,24 @@
   font-family: Sato;
   font-weight: 700;
 }
+
+.validationError {
+  color: red;
+  font-size: 14px;
+}
+
+.icon {
+  height: 22px;
+  margin: 10px 15px 10px 15px;
+  cursor: pointer;
+}
+
+.center {
+  text-align: center;
+}
+
+.center-all {
+  display: inline;
+  justify-content: center;
+  align-items: center;
+}

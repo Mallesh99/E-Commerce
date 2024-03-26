@@ -6,8 +6,11 @@ import goog from "../images/Google.svg";
 import micr from "../images/Microsoft.svg";
 // import rec2 from "../images/Rectangle 2@2x.svg";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AxiosConfigWithoutInterceptor } from "../axiosConfig";
+
+// Importing toastify module
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
   //start
@@ -15,50 +18,78 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [login, setLogin] = useState(false);
+  const navigate = useNavigate();
+
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let isValid = true;
+    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValidEmail = pattern.test(email);
+    const newErrors = {};
+    if (!email) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    } else if (!isValidEmail) {
+      newErrors.email = "Enter correct Email";
+      isValid = false;
+    }
+    if (!password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    }
+    setErrors(newErrors);
+    return isValid;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // alert("Submitted!!");
-    console.log("hi");
-    AxiosConfigWithoutInterceptor.post("/users/login", {
-      email,
-      password,
-    })
-      .then((res) => {
-        console.log(res);
-        setLogin(true);
-        // alert("Logged In!!");
-        window.localStorage.setItem("user", JSON.stringify(res?.data));
-        window.location.reload(false);
-        if (
-          JSON.parse(
-            window.localStorage.getItem(
-              JSON.parse(window.localStorage.getItem("user"))?.id
-            )
-          ) === null
-        ) {
-          window.localStorage.setItem(
-            JSON.parse(window.localStorage.getItem("user"))?.id,
-            JSON.stringify({
-              cart: [],
-              bill: 0,
-              _persist: { version: -1, rehydrated: true },
-            })
-          );
-        }
-        // window.localStorage.setItem(
-        //   "persist:root",
+    // console.log("hi");
 
-        //   window.localStorage.getItem(
-        //     JSON.parse(window.localStorage.getItem("user"))?.id
-        //   )
-        // );
+    if (validateForm()) {
+      AxiosConfigWithoutInterceptor.post("/users/login", {
+        email,
+        password,
       })
-      .catch((err) => {
-        // alert(err.response.data.message);
-        alert("Wrong Credentials");
-        err = new Error();
-      });
+        .then((res) => {
+          console.log(res);
+          setLogin(true);
+          // alert("Logged In!!");
+          window.localStorage.setItem("user", JSON.stringify(res?.data));
+          navigate("/");
+          window.location.reload(false);
+          if (
+            JSON.parse(
+              window.localStorage.getItem(
+                JSON.parse(window.localStorage.getItem("user"))?.id
+              )
+            ) === null
+          ) {
+            window.localStorage.setItem(
+              JSON.parse(window.localStorage.getItem("user"))?.id,
+              JSON.stringify({
+                cart: [],
+                bill: 0,
+                _persist: { version: -1, rehydrated: true },
+              })
+            );
+          }
+        })
+        .catch((err) => {
+          // if (err.response.data.errors) {
+          //   err.response.data.errors.forEach((element) =>
+          //     toast(element.msg, { style: { background: "#fff2df" } })
+          //   );
+          // }
+          err = new Error();
+          toast("Wrong Credentials", { style: { background: "#fff2df" } });
+
+          // console.log(err);
+        });
+    } else {
+      console.log("not valid");
+    }
   };
 
   //end
@@ -84,6 +115,9 @@ const LoginPage = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
+              {errors.email && (
+                <div className="validationError">{errors.email}</div>
+              )}
             </div>
             <div
               className="form-control"
@@ -96,6 +130,9 @@ const LoginPage = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              {errors.password && (
+                <div className="validationError">{errors.password}</div>
+              )}
             </div>
             <div
               className="form-control"

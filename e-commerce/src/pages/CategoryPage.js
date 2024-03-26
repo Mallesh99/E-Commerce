@@ -80,6 +80,23 @@ const CategoryPage = () => {
       return product;
     }
   });
+
+  const setCategoryCasual = () => {
+    setCategory("Casual");
+    return window.scrollTo(0, 0);
+  };
+  const setCategoryFormal = () => {
+    setCategory("Formal");
+    return window.scrollTo(0, 0);
+  };
+  const setCategoryParty = () => {
+    setCategory("Party");
+    return window.scrollTo(0, 0);
+  };
+  const setCategoryGym = () => {
+    setCategory("Gym");
+    return window.scrollTo(0, 0);
+  };
   return (
     <div className="container category-page">
       <div className="forfont mt-3 mb-3 filterbox">
@@ -141,43 +158,19 @@ const CategoryPage = () => {
           <h3>Dress Style</h3>
 
           <div>
-            <p
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                setCategory("Casual");
-                return window.scrollTo(0, 0);
-              }}
-            >
+            <p style={{ cursor: "pointer" }} onClick={setCategoryCasual}>
               Casual
             </p>
 
-            <p
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                setCategory("Formal");
-                return window.scrollTo(0, 0);
-              }}
-            >
+            <p style={{ cursor: "pointer" }} onClick={setCategoryFormal}>
               Formal
             </p>
 
-            <p
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                setCategory("Party");
-                return window.scrollTo(0, 0);
-              }}
-            >
+            <p style={{ cursor: "pointer" }} onClick={setCategoryParty}>
               Party
             </p>
 
-            <p
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                setCategory("Gym");
-                return window.scrollTo(0, 0);
-              }}
-            >
+            <p style={{ cursor: "pointer" }} onClick={setCategoryGym}>
               Gym
             </p>
           </div>

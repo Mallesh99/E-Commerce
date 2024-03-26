@@ -43,12 +43,23 @@ const Navbarr = () => {
       JSON.stringify(cart)
     );
 
-    window.localStorage.removeItem("admin");
+    window.localStorage.removeItem("user");
     window.localStorage.removeItem("persist:root");
     window.location.reload(false);
   }
 
   const { search, setSearch } = useCategory();
+
+  const setCategoryNewArrivals = () => {
+    navigate("/categorypage");
+    setCategory("New-Arrivals");
+    return window.scrollTo(0, 0);
+  };
+  const setCategoryTopSelling = () => {
+    navigate("/categorypage");
+    setCategory("Top-Selling");
+    return window.scrollTo(0, 0);
+  };
 
   return (
     <>
@@ -74,20 +85,8 @@ const Navbarr = () => {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="me-auto">
-                <Nav.Link
-                  onClick={() => {
-                    navigate("/categorypage");
-                    setCategory("Top-Selling");
-                  }}
-                >
-                  Top-Selling
-                </Nav.Link>
-                <Nav.Link
-                  onClick={() => {
-                    navigate("/categorypage");
-                    setCategory("New-Arrivals");
-                  }}
-                >
+                <Nav.Link onClick={setCategoryTopSelling}>Top-Selling</Nav.Link>
+                <Nav.Link onClick={setCategoryNewArrivals}>
                   New Arrivals
                 </Nav.Link>
               </Nav>

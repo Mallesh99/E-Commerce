@@ -15,11 +15,15 @@ import Coupons from "./components/Coupons";
 import AddCoupon from "./components/AddCoupon";
 import UpdateCoupon from "./components/UpdateCoupon";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function App() {
   const isAuthenticated = window.localStorage.getItem("admin") != null;
   console.log(window.localStorage.getItem("admin"));
   return (
     <div className="App">
+      <ToastContainer />
       <Routes>
         {!isAuthenticated && <Route path="/*" element={<Login />} />}
         {isAuthenticated && (

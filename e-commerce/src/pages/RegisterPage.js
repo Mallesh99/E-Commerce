@@ -5,30 +5,64 @@ import bgimg from "../images/91fa59e6781adbdced82e349bb595d99 1.svg";
 
 import { Link } from "react-router-dom";
 import { AxiosConfigWithoutInterceptor } from "../axiosConfig";
+import { toast } from "react-toastify";
 
 const RegisterPage = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {};
+    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValidEmail = pattern.test(email);
+    if (!fullName) {
+      newErrors.fullName = "Fullname is required";
+      isValid = false;
+    }
+    if (!email) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    } else if (!isValidEmail) {
+      newErrors.email = "Enter correct Email";
+      isValid = false;
+    }
+    if (!password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    }
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleSubmit = (e) => {
-    // e.preventDefault();
-    // alert("Submitted!!");
+    e.preventDefault();
 
-    AxiosConfigWithoutInterceptor.post("/users/register", {
-      fullName,
-      email,
-      password,
-    })
-      .then((res) => {
-        // console.log(res);
-
-        alert("Registered!!");
+    if (validateForm()) {
+      AxiosConfigWithoutInterceptor.post("/users/register", {
+        fullName,
+        email,
+        password,
       })
-      .catch((err) => {
-        // console.log(err);
-        err = new Error();
-      });
+        .then((res) => {
+          toast("Registered!!", { style: { background: "#fff2df" } });
+        })
+        .catch((err) => {
+          // if (err.response.data.errors) {
+          //   err.response.data.errors.forEach((element) =>
+          //     toast(element.msg, { style: { background: "#fff2df" } })
+          //   );
+          // }
+          if (err.response.data.message) {
+            toast(err.response.data.message, {
+              style: { background: "#fff2df" },
+            });
+          }
+        });
+    }
   };
 
   return (
@@ -51,6 +85,9 @@ const RegisterPage = () => {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
               />
+              {errors.fullName && (
+                <div className="validationError">{errors.fullName}</div>
+              )}
             </div>
             <div
               className="form-control mt-3"
@@ -63,6 +100,9 @@ const RegisterPage = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
+              {errors.email && (
+                <div className="validationError">{errors.email}</div>
+              )}
             </div>
             <div
               className="form-control mt-3"
@@ -75,6 +115,9 @@ const RegisterPage = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              {errors.password && (
+                <div className="validationError">{errors.password}</div>
+              )}
             </div>
 
             <div

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import CartCard from "./CartCard";
+import CartCard from "../components/CartCard";
 import "../css/CartPage.css";
 import line6 from "../images/Line 6.svg";
 
@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteAllFromCart } from "../redux/slices/cartSlice";
 import { useNavigate } from "react-router-dom";
 import { AxiosConfig } from "../axiosConfig";
+import { toast } from "react-toastify";
 
 const CartPage = () => {
   const cart = useSelector((state) => state.cart);
@@ -20,6 +21,37 @@ const CartPage = () => {
   const [searchCoupon, setSearchCoupon] = useState("");
 
   const navigate = useNavigate();
+
+  const [errors, setErrors] = useState({});
+
+  const validateCoupon = () => {
+    let isValid = true;
+    const newErrors = {};
+    if (!searchCoupon) {
+      newErrors.searchCoupon = "Enter Coupon Code";
+      isValid = false;
+    }
+    setErrors(newErrors);
+    return isValid;
+  };
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {};
+    // console.log(mobno.length, "valmob");
+    if (!address) {
+      newErrors.address = "Address is required";
+      isValid = false;
+    }
+    if (!mobno) {
+      newErrors.mobno = "Mobile number is required";
+      isValid = false;
+    } else if (mobno.length !== 10) {
+      newErrors.mobno = "Enter valid Mobile number";
+      isValid = false;
+    }
+    setErrors(newErrors);
+    return isValid;
+  };
 
   //for razorpay
   function loadScript(src) {
@@ -37,9 +69,7 @@ const CartPage = () => {
   }
 
   async function displayRazorpay() {
-    if (address === "" || !mobno) {
-      alert("Fill all required fields");
-    } else {
+    if (validateForm()) {
       const res = await loadScript(
         "https://checkout.razorpay.com/v1/checkout.js"
       );
@@ -92,7 +122,7 @@ const CartPage = () => {
 
           console.log(result.data, "success res");
 
-          alert(result.data.msg);
+          // toast(result.data.msg, { style: { background: "#fff2df" } });
           if (result.data.msg === "Payment Successful") {
             setPaymentStatus("Paid");
           }
@@ -116,14 +146,23 @@ const CartPage = () => {
   }
 
   async function searchcoupon() {
-    try {
-      await AxiosConfig.get(`/coupons/getcoupon/${searchCoupon}`).then(
-        (res) => {
-          setDiscount(res?.data.discount);
-        }
-      );
-    } catch (err) {
-      console.log(err);
+    if (validateCoupon()) {
+      try {
+        await AxiosConfig.get(`/coupons/getcoupon/${searchCoupon}`).then(
+          (res) => {
+            setDiscount(res?.data.discount);
+            toast("Coupon Applied", { style: { background: "#fff2df" } });
+          }
+        );
+      } catch (err) {
+        console.log(err.response, "er");
+        // if (err.response.data.errors) {
+        //   err.response.data.errors.forEach((element) =>
+        //     toast(element.msg, { style: { background: "#fff2df" } })
+        //   );
+        // }
+        toast(err.response.data, { style: { background: "#fff2df" } });
+      }
     }
   }
 
@@ -131,9 +170,7 @@ const CartPage = () => {
 
   //apis
   function placeorder() {
-    if (address === "" || !mobno) {
-      alert("Fill all required fields");
-    } else {
+    if (validateForm()) {
       try {
         AxiosConfig.post("/orders/create", {
           ownerName: JSON.parse(window.localStorage.getItem("user")).fullName,
@@ -157,7 +194,7 @@ const CartPage = () => {
           navigate("/");
 
           window.scroll(0, 0);
-          alert("Order Placed");
+          toast("Order Placed", { style: { background: "#fff2df" } });
           console.log(res);
         });
       } catch (err) {
@@ -240,6 +277,9 @@ const CartPage = () => {
               value={searchCoupon}
               onChange={(e) => setSearchCoupon(e.target.value)}
             />
+            {errors.searchCoupon && (
+              <div className="validationError">{errors.searchCoupon}</div>
+            )}
             <div className="mt-3 radio">
               <label>
                 <input
@@ -270,6 +310,9 @@ const CartPage = () => {
                 onChange={(e) => setAddress(e.target.value)}
                 required
               />
+              {errors.address && (
+                <div className="validationError">{errors.address}</div>
+              )}
             </Form.Group>
             <Form.Group className="mb-3 mt-3">
               <Form.Label>Mobile Number</Form.Label>
@@ -281,6 +324,9 @@ const CartPage = () => {
                 onChange={(e) => setMobno(e.target.value)}
                 required
               />
+              {errors.mobno && (
+                <div className="validationError">{errors.mobno}</div>
+              )}
             </Form.Group>
             <button
               id="cartbtn"
