@@ -153,7 +153,8 @@ const LoginPage = () => {
               className="form-control"
               style={{ border: "none", padding: "0" }}
             >
-              <button type="submit" id="but">
+              <label></label>
+              <button type="submit" onClick={(e) => handleSubmit(e)}>
                 Login
               </button>
             </div>

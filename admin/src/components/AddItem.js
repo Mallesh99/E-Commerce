@@ -176,32 +176,47 @@ const AddItem = () => {
             <div className="validationError">{errors.image}</div>
           )}
         </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Category</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter category"
-            name="category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          />
-          {errors.category && (
-            <div className="validationError">{errors.category}</div>
-          )}
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Price</Form.Label>
-          <Form.Control
-            type="number"
-            placeholder="Enter price"
-            name="price"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          />
-          {errors.price && (
-            <div className="validationError">{errors.price}</div>
-          )}
-        </Form.Group>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>Category</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter category"
+              name="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            />
+            {errors.category && (
+              <div className="validationError">{errors.category}</div>
+            )}
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>Price</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Enter price"
+              name="price"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+            />
+            {errors.price && (
+              <div className="validationError">{errors.price}</div>
+            )}
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>Discount</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Enter discount"
+              name="discount"
+              value={discount}
+              onChange={(e) => setDiscount(e.target.value)}
+            />
+            {errors.discount && (
+              <div className="validationError">{errors.discount}</div>
+            )}
+          </Form.Group>
+        </div>
 
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Choose Sizes</Form.Label>
@@ -231,20 +246,6 @@ const AddItem = () => {
           />
           {errors.colors && (
             <div className="validationError">{errors.colors}</div>
-          )}
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Discount</Form.Label>
-          <Form.Control
-            type="number"
-            placeholder="Enter discount on the product"
-            name="discount"
-            value={discount}
-            onChange={(e) => setDiscount(e.target.value)}
-          />
-          {errors.discount && (
-            <div className="validationError">{errors.discount}</div>
           )}
         </Form.Group>
 
