@@ -5,6 +5,8 @@ const app = express();
 app.use(
   cors({
     origin: "https://e-commerce-liart-two.vercel.app/",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 app.use(express.json());
@@ -13,19 +15,19 @@ app.use("/images", express.static("images"));
 const dbConnect = require("./models/dbConnect");
 dbConnect();
 
-var allowCrossDomain = function (req, res, next) {
-  res.header(
-    "Access-Control-Allow-Origin",
-    "https://e-commerce-liart-two.vercel.app/"
-  );
-  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  next();
-};
+// var allowCrossDomain = function (req, res, next) {
+//   res.header(
+//     "Access-Control-Allow-Origin",
+//     "https://e-commerce-liart-two.vercel.app/"
+//   );
+//   res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+//   res.header("Access-Control-Allow-Headers", "Content-Type");
+//   next();
+// };
 
-app.configure(function () {
-  app.use(allowCrossDomain);
-});
+// app.configure(function () {
+//   app.use(allowCrossDomain);
+// });
 
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
