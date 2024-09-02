@@ -13,6 +13,20 @@ app.use("/images", express.static("images"));
 const dbConnect = require("./models/dbConnect");
 dbConnect();
 
+var allowCrossDomain = function (req, res, next) {
+  res.header(
+    "Access-Control-Allow-Origin",
+    "https://e-commerce-liart-two.vercel.app/"
+  );
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  next();
+};
+
+app.configure(function () {
+  app.use(allowCrossDomain);
+});
+
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const adminRoutes = require("./routes/adminRoutes");
