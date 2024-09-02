@@ -1,0 +1,150 @@
+.fontIntegral700 {
+  font-family: Integral;
+  font-weight: 700;
+}
+
+.fontsato {
+  font-family: Sato;
+  font-weight: 700;
+}
+
+.border2px {
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 20px;
+  border-color: #f0f0f0;
+}
+
+.ordsum {
+  padding: 25px;
+  height: 100%;
+}
+
+.ordsum p {
+  font-size: 20px;
+}
+
+.curp {
+  cursor: pointer;
+}
+
+.cardo {
+  width: 97%;
+  border: none;
+  display: -webkit-inline-box;
+  position: relative;
+  margin: 15px;
+  font-family: Sato;
+  font-weight: 700;
+}
+
+.imgprod {
+  width: 10rem;
+  height: 10rem;
+  object-fit: contain;
+}
+
+.cartitems {
+  display: flex;
+}
+
+.cardbody {
+  width: 35rem;
+}
+
+.cardtitle {
+  font-weight: 700;
+}
+
+.delicon {
+  position: absolute;
+  top: 17px;
+  right: 22px;
+  cursor: pointer;
+}
+.quantity {
+  width: 170px;
+  height: 52px;
+  border-radius: 62px;
+  /* padding: 16px, 54px, 16px, 54px; */
+  background-color: #f0f0f0;
+  border: none;
+  margin-right: 12px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 15px 0px 15px;
+  position: absolute;
+  bottom: 9%;
+  right: 0;
+  width: 15%;
+  height: 15%;
+}
+.ordsum {
+  margin-left: 2%;
+}
+
+.promocodesearch {
+  height: 3.5rem;
+  width: 68%;
+}
+
+#applybtn {
+  width: 30%;
+  height: 3.5rem;
+  border-radius: 62px;
+  /* padding: 16px, 54px, 16px, 54px; */
+  background-color: black;
+  color: white;
+}
+
+.radio {
+  font-size: large;
+  font-weight: 700;
+}
+
+@media only screen and (max-width: 768px) {
+  .cartitems {
+    display: inline;
+  }
+  .cardbody {
+    width: 16rem;
+  }
+
+  .cardo {
+    font-size: 10px;
+  }
+
+  .cardtitle {
+    font-size: 12px;
+  }
+
+  .imgprod {
+    margin: 30px 0 30px 0;
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .delicon {
+    width: 12px;
+  }
+
+  .quantity {
+    right: 1%;
+  }
+
+  .ordsum h2 {
+    font-size: 18px;
+  }
+  .ordsum p {
+    font-size: 12px;
+  }
+  .ordsum img {
+    width: 100%;
+  }
+  .ordsum {
+    margin: 5% 0 0 0;
+  }
+  .ordsum button {
+    font-size: 12px;
+  }
+}

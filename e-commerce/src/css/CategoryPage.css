@@ -1,0 +1,98 @@
+@font-face {
+  font-family: Sato;
+  src: url(./Satoshi-Variable.ttf);
+}
+
+.forfont {
+  font-family: Sato;
+  border-radius: 20px;
+  border-width: 45px;
+  border-color: #cc7373;
+}
+
+.forfont h3 {
+  font-weight: 700;
+}
+
+.categoryprod {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.fontsato {
+  font-family: Sato;
+}
+
+#catbutton {
+  width: 40%;
+  height: 40px;
+  border-radius: 62px;
+  /* padding: 16px, 54px, 16px, 54px; */
+  background-color: #f0f0f0;
+  border: none;
+  margin-right: 12px;
+}
+
+/* for responsiveness */
+
+.category-page {
+  display: flex;
+}
+
+.filterbox {
+  width: 18vw;
+  border-style: solid;
+  border-width: 2.5px;
+  border-radius: 20px;
+  padding: 20px;
+  border-color: #f0f0f0;
+  height: 100%;
+}
+
+.categorydiv {
+  width: 100%;
+  padding: 2%;
+}
+
+.card-img {
+  width: 19rem;
+  height: 19rem;
+  /* height: 10rem; */
+  object-fit: contain;
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 20px;
+  border-color: #f0f0f0;
+}
+
+.single-line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prodcard {
+  font-size: 100%;
+}
+
+@media only screen and (max-width: 760px) {
+  .filterbox {
+    display: none;
+  }
+
+  .categoryprod {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .card-img {
+    width: 10rem;
+    height: 10rem;
+  }
+
+  .tsize {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,169 @@
+import React, { useEffect, useState } from "react";
+
+import "./Products.css";
+import Button from "react-bootstrap/esm/Button";
+import { Link, useNavigate } from "react-router-dom";
+import Pagination from "./Pagination";
+import { AxiosConfig } from "../axiosConfig";
+
+import delicon from "../images/delicon.svg";
+import editicon from "../images/edit.png";
+
+const Coupons = () => {
+  const navigate = useNavigate();
+  const [coupons, setCoupons] = useState([]);
+
+  async function fetchData() {
+    try {
+      const res = await AxiosConfig.get("/coupons/getAll");
+      console.log(res.data);
+      setCoupons(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  //pagination code
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [recordsPerPage] = useState(10);
+
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const nPages = Math.ceil(coupons.length / recordsPerPage);
+
+  const deleteCoupon = (coupon) => {
+    // e.preventDefault();
+    // console.log(item);
+
+    AxiosConfig.delete(`/coupons/${coupon._id}`)
+      .then((res) => {
+        // console.log(res.data);
+        fetchData();
+      })
+      .catch((err) => {
+        // console.log(err);
+        alert("Not Deleted");
+        err = new Error();
+      });
+  };
+
+  return (
+    <div
+      className="fontsato"
+      style={{
+        width: "100%",
+        padding: "3rem",
+        justifyContent: "center",
+        textAlign: "center",
+      }}
+    >
+      <table className="mb-3 " style={{ marginLeft: "12rem" }}>
+        <thead>
+          <tr>
+            {/* <th>Product-ID</th> */}
+            <th>Coupon Code</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Discount</th>
+
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {coupons
+            ?.slice(indexOfFirstRecord, indexOfLastRecord)
+            .map((coupon) => {
+              // console.log(typeof []);
+              return (
+                <tr>
+                  <td>{coupon.couponCode}</td>
+                  <td>{coupon.startDate.toString().substring(0, 10)}</td>
+                  <td>{coupon.endDate.toString().substring(0, 10)}</td>
+                  <td>{coupon.discount}</td>
+
+                  <td>
+                    <img
+                      className="icon"
+                      src={editicon}
+                      alt="editicon"
+                      onClick={() => {
+                        navigate("/updatecoupon", { state: coupon });
+                      }}
+                    />
+                    {/* <Button
+                      variant="success"
+                      type="submit"
+                      onClick={() => {
+                        navigate("/updatecoupon", { state: coupon });
+                      }}
+                    >
+                      Update Coupon
+                    </Button> */}
+                  </td>
+                  <td>
+                    <img
+                      className="icon"
+                      src={delicon}
+                      alt="delicon"
+                      onClick={(e) => deleteCoupon(coupon)}
+                    />
+                    {/* <Button
+                      variant="danger"
+                      type="submit"
+                      onClick={(e) => deleteCoupon(coupon)}
+                    >
+                      Delete Coupon
+                    </Button> */}
+                  </td>
+                </tr>
+              );
+            })}
+        </tbody>
+      </table>
+      <Pagination
+        nPages={nPages}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
+
+      <Button
+        variant="primary"
+        type="submit"
+        className="mt-3"
+        onClick={() => navigate("/addcoupon")}
+      >
+        Add Coupon
+      </Button>
+    </div>
+  );
+};
+
+export default Coupons;
+
+// import React, { Component } from 'react'
+// import ReactDOM from 'react-dom'
+// import MaterialTable from 'material-table'
+
+// class App extends Component {
+//   render() {
+//     return (
+//       <div style={{ maxWidth: '100%' }}>
+//         <MaterialTable
+//           columns={[
+//             { title: 'Adı', field: 'name' },
+//             { title: 'Soyadı', field: 'surname' },
+//             { title: 'Doğum Yılı', field: 'birthYear', type: 'numeric' },
+//             { title: 'Doğum Yeri', field: 'birthCity', lookup: { 34: 'İstanbul', 63: 'Şanlıurfa' } }
+//           ]}
+//           data={[{ name: 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 }]}
+//           title="Demo Title"
+//         />
+//       </div>
+//     )
+//   }
+// }
