@@ -2,7 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
-app.use(cors({ origin: "https://e-commerce-liart-two.vercel.app/" }));
+const corsOptions = {
+  origin: "https://e-commerce-liart-two.vercel.app/",
+  credentials: true,
+  optionSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use("/images", express.static("images"));
