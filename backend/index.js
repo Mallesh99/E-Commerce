@@ -4,7 +4,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://e-commerce-liart-two.vercel.app/",
+    origin: "https://e-commerce-7073v3m4c-mallesh99s-projects.vercel.app/",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
