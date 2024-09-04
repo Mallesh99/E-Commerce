@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
-const cors = require("cors");
 const corsOptions = {
   origin: "https://e-commerce-liart-two.vercel.app/",
   credentials: true,
