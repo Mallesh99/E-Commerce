@@ -25,9 +25,7 @@ var allowCrossDomain = function (req, res, next) {
   next();
 };
 
-app.configure(function () {
-  app.use(allowCrossDomain);
-});
+app.use(allowCrossDomain);
 
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
