@@ -94,7 +94,7 @@ const ProductPage = () => {
                 padding: "70px 20px 40px 40px",
               }}
             >
-              <img className="pimg" src={product.image} alt="bgimg" />
+              <img className="pimg" src={product.image.substring(0,7)+process.env.REACT_APP_API_SERVER_IP+product.image.substring(21)} alt="bgimg" />
             </div>
           </div>
           <div className="pmatter">

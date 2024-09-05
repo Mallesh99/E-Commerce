@@ -97,7 +97,7 @@ const CartCard = (props) => {
   };
   return (
     <Card className="cardo">
-      <Card.Img className="imgprod" variant="top" src={props.img} />
+      <Card.Img className="imgprod" variant="top" src={props.img.substring(0,7)+process.env.REACT_APP_API_SERVER_IP+props.img.substring(21)} />
 
       <Card.Body className="cardbody">
         <Card.Title className="cardtitle">{props.title}</Card.Title>
