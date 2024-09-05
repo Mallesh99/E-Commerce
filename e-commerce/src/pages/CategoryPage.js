@@ -1,25 +1,22 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import line from "../images/Line 9.svg";
 import "../css/CategoryPage.css";
 import Circle from "../components/Circle";
-
 import ProductCard from "../components/Productcard";
-import line9 from "../images/Line 9.svg";
-import { useLocation, useNavigate } from "react-router-dom";
 import Pagination from "../components/Pagination";
 import { useCategory } from "../components/CategoryContext";
 import { AxiosConfig } from "../axiosConfig";
+import Loader from "../components/Loader";
 
 const CategoryPage = () => {
-  const { category, setCategory, search, setSearch } = useCategory();
+  const { category, setCategory, search } = useCategory();
   console.log(search, "catsearch");
-  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
 
   async function fetchData() {
     try {
       const res = await AxiosConfig.get("/products/getAll");
-      // console.log(res.data);
+      console.log(res.data);
       setProducts(res.data);
     } catch (err) {
       console.error(err);
@@ -27,7 +24,6 @@ const CategoryPage = () => {
   }
   useEffect(() => {
     fetchData();
-    // window.scrollTo(0, 0);
   }, [products]);
 
   var colors = [
@@ -65,21 +61,8 @@ const CategoryPage = () => {
     ) {
       return product;
     }
-    // return item.category === category;
   });
   const nPages = Math.ceil(data.length / recordsPerPage);
-
-  //for search bar code
-
-  const filteredProducts = products.filter((product) => {
-    if (
-      product.name.toLowerCase().includes(search) ||
-      product.description.toLowerCase().includes(search) ||
-      product.category.toLowerCase().includes(search)
-    ) {
-      return product;
-    }
-  });
 
   const setCategoryCasual = () => {
     setCategory("Casual");
@@ -97,6 +80,14 @@ const CategoryPage = () => {
     setCategory("Gym");
     return window.scrollTo(0, 0);
   };
+
+  if (products.length === 0) {
+    return <Loader />;
+  }
+
+  console.log("products", products);
+
+  const imgUrl = process.env.REACT_APP_API_END_POINT;
   return (
     <div className="container category-page">
       <div className="forfont mt-3 mb-3 filterbox">
@@ -192,7 +183,7 @@ const CategoryPage = () => {
           {data.slice(indexOfFirstRecord, indexOfLastRecord).map((item) => {
             return (
               <ProductCard
-                img={item.image}
+                img={imgUrl + item.image.substring(26)}
                 title={item.name}
                 cost={item.price}
                 id={item._id}

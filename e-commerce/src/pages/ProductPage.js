@@ -18,6 +18,7 @@ import "swiper/css";
 
 import SetThings from "../components/SetThings";
 import { AxiosConfig } from "../axiosConfig";
+import Loader from "../components/Loader";
 
 const ProductPage = () => {
   // console.log(typeof count);
@@ -79,6 +80,13 @@ const ProductPage = () => {
     // fetchCart();
   }, [id]);
 
+  if (!product) {
+    return <Loader />;
+  }
+
+  console.log("product", product);
+
+  const imgUrl = process.env.REACT_APP_API_END_POINT;
   return (
     product != null && (
       <div className="product-page">
@@ -94,7 +102,11 @@ const ProductPage = () => {
                 padding: "70px 20px 40px 40px",
               }}
             >
-              <img className="pimg" src={product.image} alt="bgimg" />
+              <img
+                className="pimg"
+                src={imgUrl + product.image.substring(26)}
+                alt="bgimg"
+              />
             </div>
           </div>
           <div className="pmatter">
@@ -211,7 +223,7 @@ const ProductPage = () => {
                   return (
                     <SwiperSlide>
                       <ProductCard
-                        img={item.image}
+                        img={imgUrl + item.image.substring(26)}
                         title={item.name}
                         cost={item.price}
                         id={item._id}

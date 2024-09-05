@@ -37,7 +37,6 @@ const CartPage = () => {
   const validateForm = () => {
     let isValid = true;
     const newErrors = {};
-    // console.log(mobno.length, "valmob");
     if (!address) {
       newErrors.address = "Address is required";
       isValid = false;
@@ -156,11 +155,6 @@ const CartPage = () => {
         );
       } catch (err) {
         console.log(err.response, "er");
-        // if (err.response.data.errors) {
-        //   err.response.data.errors.forEach((element) =>
-        //     toast(element.msg, { style: { background: "#fff2df" } })
-        //   );
-        // }
         toast(err.response.data, { style: { background: "#fff2df" } });
       }
     }
@@ -210,6 +204,7 @@ const CartPage = () => {
     }
   }, [paymentStatus]);
 
+  const imgUrl = process.env.REACT_APP_API_END_POINT;
   return (
     cart != null && (
       <div className="container cartpage fontsato mb-4">
@@ -219,7 +214,7 @@ const CartPage = () => {
             {cart.cart?.map((item) => {
               return (
                 <CartCard
-                  img={item.image}
+                  img={imgUrl + item.image.substring(26)}
                   title={item.name}
                   cost={item.price}
                   id={item.id}

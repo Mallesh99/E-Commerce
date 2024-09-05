@@ -4,17 +4,12 @@ import bgimg from "../images/91fa59e6781adbdced82e349bb595d99 1.svg";
 import or from "../images/Frame 18.svg";
 import goog from "../images/Google.svg";
 import micr from "../images/Microsoft.svg";
-// import rec2 from "../images/Rectangle 2@2x.svg";
 
 import { Link, useNavigate } from "react-router-dom";
 import { AxiosConfigWithoutInterceptor } from "../axiosConfig";
-
-// Importing toastify module
 import { toast } from "react-toastify";
 
 const LoginPage = () => {
-  //start
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [login, setLogin] = useState(false);
@@ -44,9 +39,6 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // alert("Submitted!!");
-    // console.log("hi");
-
     if (validateForm()) {
       AxiosConfigWithoutInterceptor.post("/users/login", {
         email,
@@ -55,7 +47,6 @@ const LoginPage = () => {
         .then((res) => {
           console.log(res);
           setLogin(true);
-          // alert("Logged In!!");
           window.localStorage.setItem("user", JSON.stringify(res?.data));
           navigate("/");
           window.location.reload(false);
@@ -77,29 +68,22 @@ const LoginPage = () => {
           }
         })
         .catch((err) => {
-          // if (err.response.data.errors) {
-          //   err.response.data.errors.forEach((element) =>
-          //     toast(element.msg, { style: { background: "#fff2df" } })
-          //   );
-          // }
           err = new Error();
           toast("Wrong Credentials", { style: { background: "#fff2df" } });
-
-          // console.log(err);
         });
     } else {
       console.log("not valid");
     }
   };
-
-  //end
-
   return (
     <div className="page ">
       <div className="info ">
         <div id="welcome">
           <h1>Hey</h1>
           <h1>Welcome Back!</h1>
+          <h5>To </h5>
+          <h1 style={{ color: "blue" }}>ATTIRYZ</h1>
+
           <p>We are very happy to see you back!</p>
         </div>
         <div className="hello">
@@ -138,15 +122,13 @@ const LoginPage = () => {
               className="form-control"
               style={{ border: "none", paddingLeft: "0" }}
             >
+              {/* <label className="abc ">
+                <input type="checkbox" />
+                &nbsp; By signing up, you are creating a ATTIRYZ account
+              </label> */}
               <label className="abc">
                 <input type="checkbox" />
-                By signing up, you are creating a COMMIT account, and
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;you agree to COMMIT’s Term of Use
-                and Privacy Policy.
-              </label>
-              <label className="abc">
-                <input type="checkbox" />
-                Remember Me as Member of COMMIT Community.
+                &nbsp; Remember Me as User of ATTIRYZ Community.
               </label>
             </div>
             <div
@@ -157,12 +139,6 @@ const LoginPage = () => {
                 Login
               </button>
             </div>
-
-            {/* {register ? (
-              <p className="text-success">You Are Registered Successfully</p>
-            ) : (
-              <p className="text-danger">You Are Not Registered</p>
-            )} */}
           </form>
           <div className="fromor">
             <img
@@ -173,7 +149,7 @@ const LoginPage = () => {
               }}
             />
 
-            <div id="orlogins" className=" mt-1">
+            {/* <div id="orlogins" className=" mt-1">
               <button id="g" style={{ fontSize: "13px" }}>
                 <div>
                   <img
@@ -202,7 +178,7 @@ const LoginPage = () => {
                 </div>
                 Login with Microsoft
               </button>
-            </div>
+            </div> */}
 
             <p className="mt-2">
               Don’t have account? <Link to="/register">Sign Up here!</Link>

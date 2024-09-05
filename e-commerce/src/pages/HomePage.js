@@ -23,12 +23,11 @@ import "swiper/css";
 
 import { useCategory } from "../components/CategoryContext";
 import { AxiosConfig } from "../axiosConfig";
+import Loader from "../components/Loader";
 
 const HomePage = () => {
   const { category, setCategory } = useCategory();
-
   const navigate = useNavigate();
-  //start
   const [products, setProducts] = useState([]);
 
   async function fetchData() {
@@ -43,14 +42,6 @@ const HomePage = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  //end
-
-  // console.log(
-  //   window.localStorage.getItem(
-  //     JSON.parse(window.localStorage.getItem("user"))?.id
-  //   ),
-  //   "console"
-  // );
 
   const setCategoryCasual = () => {
     navigate("/categorypage");
@@ -82,6 +73,12 @@ const HomePage = () => {
     setCategory("Top-Selling");
     return window.scrollTo(0, 0);
   };
+
+  const imgUrl = process.env.REACT_APP_API_END_POINT;
+
+  if (products.length === 0) {
+    return <Loader />;
+  }
 
   return (
     <div className=" home-page ">
@@ -148,28 +145,9 @@ const HomePage = () => {
       </div>
 
       <div className="newarrivals">
-        {/* <h1 className="center-all mt-5 mb-5">NEW ARRIVALS</h1>
-        <div className="center-all products-line">
-          {products
-            ?.filter((item) => {
-              return item.category === "New-Arrivals";
-            })
-            .slice(0, 4)
-            .map((item) => {
-              return (
-                <ProductCard
-                  img={item.image}
-                  title={item.name}
-                  cost={item.price}
-                  id={item._id}
-                />
-              );
-            })}
-        </div> */}
         <h1 className="center-all mt-5 mb-5">NEW ARRIVALS</h1>
         <div className="center-all container" style={{ width: "80%" }}>
           <Swiper
-            // slidesPerView={4}
             spaceBetween={30}
             freeMode={true}
             pagination={{
@@ -203,7 +181,7 @@ const HomePage = () => {
                 return (
                   <SwiperSlide>
                     <ProductCard
-                      img={item.image}
+                      img={imgUrl + item.image.substring(26)}
                       title={item.name}
                       cost={item.price}
                       id={item._id}
@@ -226,7 +204,6 @@ const HomePage = () => {
         <h1 className="center-all mt-5 mb-5">TOP SELLING</h1>
         <div className="center-all products-line">
           <Swiper
-            // slidesPerView={4}
             spaceBetween={30}
             freeMode={true}
             pagination={{
@@ -260,7 +237,7 @@ const HomePage = () => {
                 return (
                   <SwiperSlide>
                     <ProductCard
-                      img={item.image}
+                      img={imgUrl + item.image.substring(26)}
                       title={item.name}
                       cost={item.price}
                       id={item._id}
@@ -320,7 +297,6 @@ const HomePage = () => {
         </h1>
         <div className="reviews-line container">
           <Swiper
-            // slidesPerView={4}
             spaceBetween={30}
             freeMode={true}
             pagination={{
